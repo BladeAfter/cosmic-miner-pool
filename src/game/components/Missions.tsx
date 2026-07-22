@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, Send, X, MessageCircle, Users, Play } from "lucide-react";
 import { useGame } from "../store/gameStore";
-import { showRewardedAd } from "../services/gigapub";
+import { showRewardedAd } from "../../services/gigapub";
 
 const socialIcon: Record<string, React.ComponentType<{ className?: string }>> = {
   Telegram: Send,

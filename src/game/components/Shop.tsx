@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, Check, Coins, Sparkles } from "lucide-react";
-import { useGame, shopItems, type ShopItem } from "../store/gameStore";
 
+import { useGame } from "../store/gameStore";
+import type { ShopItem, OwnedItem } from "../store/types";
+import { shopItems } from "../data/shop";
 const categories = [
   { id: "skins", label: "Skins", icon: "✨" },
   { id: "boosters", label: "Boosters", icon: "⚡" },

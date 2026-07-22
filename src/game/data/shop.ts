@@ -1,0 +1,230 @@
+import { ShopItem } from "../store/types";
+
+export const shopItems: ShopItem[] = [
+  // =======================
+  // SKINS
+  // =======================
+
+  {
+    id: "skin-drone-1",
+    name: "Drone Nebulosa",
+    category: "skins",
+    target: "Drone",
+    bonus: "+5% produção",
+    rarity: "rare",
+    priceGold: 5000,
+    image: "🛸",
+  },
+  {
+    id: "skin-planet-1",
+    name: "Planeta Aurora",
+    category: "skins",
+    target: "Planeta",
+    bonus: "+8% cristais",
+    rarity: "epic",
+    priceGold: 12000,
+    image: "🪐",
+  },
+  {
+    id: "skin-base-1",
+    name: "Base Quantum",
+    category: "skins",
+    target: "Base",
+    bonus: "+3% velocidade",
+    rarity: "rare",
+    priceGold: 6000,
+    image: "🏗️",
+  },
+  {
+    id: "skin-sat-1",
+    name: "Satélite Stellar",
+    category: "skins",
+    target: "Satélite",
+    bonus: "+6% produção",
+    rarity: "epic",
+    priceTon: 1.5,
+    image: "📡",
+  },
+  {
+    id: "skin-laser-1",
+    name: "Laser Prisma",
+    category: "skins",
+    target: "Laser",
+    bonus: "+10% cristais",
+    rarity: "epic",
+    priceGold: 15000,
+    image: "🔫",
+  },
+  {
+    id: "skin-refinery-1",
+    name: "Refinaria Fusion",
+    category: "skins",
+    target: "Refinaria",
+    bonus: "+7% produção",
+    rarity: "rare",
+    priceGold: 8000,
+    image: "🏭",
+  },
+
+  // =======================
+  // BOOSTERS
+  // =======================
+
+  {
+    id: "boost-2x",
+    name: "2x Produção",
+    category: "boosters",
+    bonus: "Dobra produção",
+    rarity: "common",
+    priceGold: 2000,
+    duration: "1h",
+    image: "⚡",
+  },
+  {
+    id: "boost-3x",
+    name: "3x Produção",
+    category: "boosters",
+    bonus: "Triplica produção",
+    rarity: "rare",
+    priceGold: 5000,
+    duration: "1h",
+    image: "🚀",
+  },
+  {
+    id: "boost-energy",
+    name: "Energia Infinita",
+    category: "boosters",
+    bonus: "Sem limite de energia",
+    rarity: "epic",
+    priceTon: 0.5,
+    duration: "30min",
+    image: "🔋",
+  },
+  {
+    id: "boost-offline",
+    name: "Offline 24h",
+    category: "boosters",
+    bonus: "Renda offline estendida",
+    rarity: "epic",
+    priceTon: 0.8,
+    duration: "24h",
+    image: "🌙",
+  },
+  {
+    id: "boost-crystals",
+    name: "Cristais Dobrados",
+    category: "boosters",
+    bonus: "2x Cristais",
+    rarity: "rare",
+    priceGold: 4000,
+    duration: "1h",
+    image: "💎",
+  },
+  {
+    id: "boost-luck",
+    name: "Sorte Suprema",
+    category: "boosters",
+    bonus: "+50% Sorte",
+    rarity: "epic",
+    priceGold: 6000,
+    duration: "45min",
+    image: "🍀",
+  },
+  {
+    id: "boost-xp",
+    name: "XP Turbo",
+    category: "boosters",
+    bonus: "3x XP",
+    rarity: "rare",
+    priceGold: 3500,
+    duration: "1h",
+    image: "📈",
+  },
+
+  // =======================
+  // PACKS
+  // =======================
+
+  {
+    id: "pack-starter",
+    name: "Pacote Iniciante",
+    category: "packs",
+    bonus: "Perfeito para começar",
+    rarity: "common",
+    priceGold: 3000,
+    contents: [
+      "5.000 Coins",
+      "100 Cristais",
+      "50 Energia",
+      "1 Booster 2x",
+    ],
+    image: "📦",
+  },
+  {
+    id: "pack-pro",
+    name: "Pacote Pro",
+    category: "packs",
+    bonus: "Impulsione seu império",
+    rarity: "epic",
+    priceTon: 2,
+    contents: [
+      "50.000 Coins",
+      "1.000 Cristais",
+      "Energia Full",
+      "3x Boosters",
+      "0.2 TON",
+    ],
+    image: "🎁",
+  },
+  {
+    id: "pack-mega",
+    name: "Mega Pacote",
+    category: "packs",
+    bonus: "O melhor custo/benefício",
+    rarity: "legendary",
+    priceTon: 5,
+    contents: [
+      "200.000 Coins",
+      "5.000 Cristais",
+      "Energia Infinita 24h",
+      "Todos os Boosters",
+      "1 TON",
+    ],
+    image: "💰",
+  },
+
+  // =======================
+  // LENDÁRIOS
+  // =======================
+
+  {
+    id: "leg-1",
+    name: "Núcleo Estelar",
+    category: "legendary",
+    bonus: "+25% produção permanente",
+    rarity: "legendary",
+    priceGold: 25000,
+    unlockTon: 3,
+    image: "⭐",
+  },
+  {
+    id: "leg-2",
+    name: "Cristal Cósmico",
+    category: "legendary",
+    bonus: "+50% cristais permanente",
+    rarity: "legendary",
+    priceGold: 30000,
+    unlockTon: 4,
+    image: "💠",
+  },
+  {
+    id: "leg-3",
+    name: "Motor de Wormhole",
+    category: "legendary",
+    bonus: "2x velocidade dos drones",
+    rarity: "legendary",
+    priceGold: 40000,
+    unlockTon: 5,
+    image: "🌀",
+  },
+];
