@@ -58,19 +58,19 @@ export function GameShell() {
   ];
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative flex min-h-[100dvh] flex-col overflow-hidden">
       <Starfield />
 
       <Header />
 
-      <main className="mx-auto max-w-md space-y-4 px-3 py-4 pb-28">
+      <main className="mx-auto w-full max-w-md flex-1 overflow-y-auto px-3 py-4 pb-32">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
             className="space-y-4"
           >
             {tab === "home" && (
@@ -135,32 +135,35 @@ export function GameShell() {
         </AnimatePresence>
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 px-3 pb-4">
-        <div className="mx-auto max-w-md glass-strong rounded-3xl p-1.5 shadow-neon">
-          <div className="grid grid-cols-4 gap-1">
-            {tabs.map((tabItem) => {
-              const active = tab === tabItem.id;
-              const Icon = tabItem.icon;
+      <nav
+        className="sticky bottom-0 z-50 w-full bg-transparent"
+        style={{
+          paddingBottom: "max(env(safe-area-inset-bottom),12px)",
+        }}
+      >
+        <div className="mx-auto max-w-md px-3">
+          <div className="glass-strong rounded-3xl p-1.5 shadow-neon">
+            <div className="grid grid-cols-4 gap-1">
+              {tabs.map((tabItem) => {
+                const active = tab === tabItem.id;
+                const Icon = tabItem.icon;
 
-              return (
-                <button
-                  key={tabItem.id}
-                  onClick={() => setTab(tabItem.id)}
-                  className={`relative flex flex-col items-center gap-0.5 rounded-2xl py-2 text-[10px] font-black uppercase transition ${
-                    active
-                      ? "bg-gradient-primary text-primary-foreground shadow-neon"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon
-                    className="h-5 w-5"
-                    strokeWidth={2.5}
-                  />
-
-                  {tabItem.label}
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={tabItem.id}
+                    onClick={() => setTab(tabItem.id)}
+                    className={`relative flex flex-col items-center gap-0.5 rounded-2xl py-2 text-[10px] font-black uppercase transition ${
+                      active
+                        ? "bg-gradient-primary text-primary-foreground shadow-neon"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" strokeWidth={2.5} />
+                    {tabItem.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </nav>

@@ -1,59 +1,62 @@
-import { GameState } from './types';
+import { GameState } from "./types";
 
 export const productionTick =
   (set: any) =>
   (dt: number) =>
     set((s: GameState) => {
-      // Habilidades
-      const mining = s.skills.find((k) => k.id === 'mining')?.level ?? 1;
-      const crystalsSkill =
-        s.skills.find((k) => k.id === 'crystals')?.level ?? 1;
-      const multiplier =
-        s.skills.find((k) => k.id === 'multiplier')?.level ?? 1;
+      const mining =
+        s.skills.find((k) => k.id === "mining")?.level ?? 1;
 
-      // Produção de coins por segundo
+      const crystalsSkill =
+        s.skills.find((k) => k.id === "crystals")?.level ?? 1;
+
+      const multiplier =
+        s.skills.find((k) => k.id === "multiplier")?.level ?? 1;
+
+      // Produção
       const coinsPerSecond =
         s.droneCount *
         (2 + mining * 0.3) *
         (1 + multiplier * 0.05);
 
-      // Produção de cristais por hora
       const crystalsPerHour =
         s.droneCount *
         20 *
         (1 + crystalsSkill * 0.12);
 
-      // Progresso do drone
+      // Drone
       const progress = s.droneProgress + dt * 0.02;
       const droneReady = progress >= 1;
 
-      return {
-        ...s,
+      const nextDroneProgress = droneReady ? 0 : progress;
+      const nextDroneCount = droneReady
+        ? s.droneCount + 1
+        : s.droneCount;
 
-        // Recursos
+      // Atualiza somente a missão necessária
+      const missions = s.missions.map((mission) => {
+        if (mission.id !== "d1") return mission;
+
+        return {
+          ...mission,
+          progress: Math.min(
+            mission.progress + coinsPerSecond * dt,
+            mission.goal
+          ),
+        };
+      });
+
+      return {
         gold: s.gold + coinsPerSecond * dt,
 
         crystals:
-          s.crystals + (crystalsPerHour / 3600) * dt,
+          s.crystals +
+          (crystalsPerHour / 3600) * dt,
 
-        // Drone
-        droneProgress: droneReady ? 0 : progress,
+        droneProgress: nextDroneProgress,
 
-        droneCount: droneReady
-          ? s.droneCount + 1
-          : s.droneCount,
+        droneCount: nextDroneCount,
 
-        // Missão diária
-        missions: s.missions.map((m) =>
-          m.id === 'd1'
-            ? {
-                ...m,
-                progress: Math.min(
-                  m.progress + coinsPerSecond * dt,
-                  m.goal
-                ),
-              }
-            : m
-        ),
+        missions,
       };
     });

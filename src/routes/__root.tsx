@@ -95,7 +95,8 @@ export const Route = createRootRouteWithContext<{
       { charSet: "utf-8" },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        content:
+          "width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover",
       },
       { title: "Lovable App" },
       {
@@ -136,7 +137,6 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
 
-        {/* GigaPub Ads */}
         <script
           async
           src="https://ad.gigapub.tech/script?id=7393"
@@ -153,6 +153,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    const tg = (window as any).Telegram?.WebApp;
+
+    if (tg) {
+      tg.ready?.();
+      tg.expand?.();
+      tg.disableVerticalSwipes?.();
+
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

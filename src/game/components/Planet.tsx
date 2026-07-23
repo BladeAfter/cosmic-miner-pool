@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 
 export function Planet() {
   return (
-    <div className="relative mx-auto grid aspect-square w-full max-w-[320px] place-items-center">
+    <div className="relative mx-auto grid aspect-square w-full max-w-[320px] overflow-hidden place-items-center">
 
-      {/* Glow leve */}
+      {/* Glow */}
       <div
         className="absolute inset-10 rounded-full opacity-20"
         style={{
@@ -17,7 +17,7 @@ export function Planet() {
       <div className="absolute inset-2 rounded-full border border-white/10" />
       <div className="absolute inset-8 rounded-full border border-cyan-400/10" />
 
-      {/* Apenas 2 drones */}
+      {/* Drones */}
       {[0, 1].map((i) => (
         <motion.div
           key={i}
@@ -32,7 +32,7 @@ export function Planet() {
           <div
             className="absolute top-1/2 -translate-y-1/2 text-xl"
             style={{
-              left: `${8 + i * 5}%`,
+              left: `${10 + i * 8}%`,
             }}
           >
             🛸
@@ -48,7 +48,7 @@ export function Planet() {
           repeat: Infinity,
           ease: "linear",
         }}
-        className="relative h-[62%] w-[62%] rounded-full overflow-hidden"
+        className="relative h-[62%] w-[62%] overflow-hidden rounded-full"
         style={{
           background:
             "radial-gradient(circle at 30% 30%, #70d6ff, #3454d1 45%, #111827 95%)",
@@ -58,18 +58,19 @@ export function Planet() {
         <div className="absolute left-[60%] top-[58%] h-10 w-10 rounded-full bg-black/20" />
       </motion.div>
 
-      {/* Apenas 6 partículas */}
+      {/* Partículas */}
       {Array.from({ length: 6 }).map((_, i) => {
         const angle = (i / 6) * Math.PI * 2;
-        const radius = 44;
+        const radius = 34;
 
         return (
           <motion.span
             key={i}
             className="absolute h-1 w-1 rounded-full bg-cyan-300"
             style={{
-              left: `calc(50% + ${Math.cos(angle) * radius}%)`,
-              top: `calc(50% + ${Math.sin(angle) * radius}%)`,
+              left: `${50 + Math.cos(angle) * radius}%`,
+              top: `${50 + Math.sin(angle) * radius}%`,
+              transform: "translate(-50%, -50%)",
             }}
             animate={{
               opacity: [0.3, 1, 0.3],
