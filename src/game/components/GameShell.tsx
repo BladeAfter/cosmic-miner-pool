@@ -12,14 +12,17 @@ import { SkillsSection } from "./SkillsSection";
 import { PoolCard } from "./PoolCard";
 import { Shop } from "./Shop";
 import { Missions } from "./Missions";
+import LoadingScreen from "./LoadingScreen/LoadingScreen";
 
 type Tab = "home" | "shop" | "pool" | "missions";
 
 export function GameShell() {
   const [tab, setTab] = useState<Tab>("home");
+  const [loading, setLoading] = useState(true);
 
   const tick = useGame((state) => state.tick);
 
+  // Loop do jogo
   useEffect(() => {
     let last = performance.now();
 
@@ -56,6 +59,15 @@ export function GameShell() {
       icon: Target,
     },
   ];
+
+  // Tela de carregamento
+  if (loading) {
+    return (
+      <LoadingScreen
+        onComplete={() => setLoading(false)}
+      />
+    );
+  }
 
   return (
     <div className="relative flex min-h-[100dvh] flex-col overflow-hidden">
