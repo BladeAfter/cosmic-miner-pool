@@ -3,47 +3,35 @@ import { useTelegram } from "../../hooks/useTelegram";
 export function TelegramProfile() {
   const { user, loading, isTelegram } = useTelegram();
 
-  if (loading) {
-    return (
-      <div className="glass-strong rounded-3xl p-4 text-center">
-        Carregando usuário...
-      </div>
-    );
-  }
+  if (loading) return null;
 
-  if (!isTelegram || !user) {
-    return (
-      <div className="glass-strong rounded-3xl p-4 text-center">
-        Abra este jogo pelo Telegram.
-      </div>
-    );
-  }
+  if (!isTelegram || !user) return null;
 
   return (
-    <div className="glass-strong flex items-center gap-4 rounded-3xl border border-violet-500/40 p-5">
+    <div className="glass-strong flex items-center gap-3 rounded-2xl border border-violet-500/40 px-4 py-3">
       <img
-        src={user.photo_url || "https://placehold.co/80x80"}
+        src={user.photo_url || "https://placehold.co/64x64"}
         alt={user.first_name}
-        className="h-16 w-16 rounded-full border-2 border-cyan-400 object-cover"
+        className="h-12 w-12 rounded-full border-2 border-cyan-400 object-cover"
       />
 
-      <div className="flex-1">
-        <h2 className="text-xl font-black text-white">
+      <div className="flex-1 overflow-hidden">
+        <h2 className="truncate text-base font-black text-white">
           {user.first_name} {user.last_name ?? ""}
         </h2>
 
-        <p className="mt-1 text-lg font-bold text-white">
+        <p className="text-sm font-bold text-orange-400">
           ⚡ NFT Vision ⚡
         </p>
 
-        <p className="mt-1 text-xs text-gray-400">
+        <p className="text-[11px] text-gray-400">
           ID: {user.id}
         </p>
-
-        <span className="mt-3 inline-block rounded-full bg-cyan-600 px-3 py-1 text-xs font-bold text-white">
-          {user.language_code?.toUpperCase() ?? "PT-BR"}
-        </span>
       </div>
+
+      <span className="rounded-full bg-cyan-600 px-2 py-1 text-[10px] font-bold text-white">
+        {user.language_code?.toUpperCase() ?? "PT-BR"}
+      </span>
     </div>
   );
 }
