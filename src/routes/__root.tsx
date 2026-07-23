@@ -103,15 +103,6 @@ export const Route = createRootRouteWithContext<{
         name: "description",
         content: "Lovable Generated Project",
       },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      {
-        property: "og:description",
-        content: "Lovable Generated Project",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -137,7 +128,6 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
 
-        {/* Telegram WebApp SDK */}
         <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
         <script
@@ -160,23 +150,20 @@ function RootComponent() {
   useEffect(() => {
     const tg = (window as any).Telegram?.WebApp;
 
-    console.log("window.Telegram:", (window as any).Telegram);
-
-    if (!tg) {
-      console.error("Telegram SDK não carregado.");
-      return;
+    if (tg) {
+      tg.ready();
+      tg.expand();
     }
 
-    tg.ready();
-    tg.expand();
-    tg.disableVerticalSwipes?.();
+    // Libera a rolagem no Telegram Mini App
+    document.documentElement.style.overflowY = "auto";
+    document.documentElement.style.overflowX = "hidden";
 
-    console.log("initData:", tg.initData);
-    console.log("initDataUnsafe:", tg.initDataUnsafe);
-    console.log("user:", tg.initDataUnsafe?.user);
-
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
+    document.body.style.overflowY = "auto";
+    document.body.style.overflowX = "hidden";
+    document.body.style.minHeight = "100dvh";
+    document.body.style.touchAction = "pan-y";
+    (document.body.style as any).webkitOverflowScrolling = "touch";
   }, []);
 
   return (
