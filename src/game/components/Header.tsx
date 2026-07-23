@@ -9,13 +9,17 @@ function fmt(n: number) {
 }
 
 export function Header() {
-  const { gold, crystals, energy, energyMax, level } = useGame();
+  const gold = useGame((state) => state.gold);
+  const crystals = useGame((state) => state.crystals);
+  const energy = useGame((state) => state.energy);
+  const energyMax = useGame((state) => state.energyMax);
+  const level = useGame((state) => state.level);
 
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3 pb-2 backdrop-blur-xl bg-background/60 border-b border-primary/20">
+    <header className="sticky top-0 z-40 px-3 pt-3 pb-2 bg-background/90 border-b border-primary/20 shadow-lg">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-primary text-sm font-black shadow-neon">
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-primary text-sm font-black">
             {level}
           </div>
 
@@ -30,19 +34,18 @@ export function Header() {
           </div>
         </div>
 
-        <span className="rounded-full bg-primary/20 border border-primary/40 px-2 py-0.5 text-[10px] font-bold text-primary">
+        <span className="rounded-full border border-primary/40 bg-primary/20 px-2 py-0.5 text-[10px] font-bold text-primary">
           LVL {level}
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-1.5">
-
+      <div className="grid grid-cols-3 gap-2">
         <ResourceBadge
           icon={<Coins className="h-4 w-4 text-yellow-950" strokeWidth={2.5} />}
           label="Coins"
           value={fmt(gold)}
           gradient="var(--gradient-gold)"
-          glow="oklch(0.85 0.18 90 / 0.4)"
+          glow="transparent"
         />
 
         <ResourceBadge
@@ -50,17 +53,16 @@ export function Header() {
           label="Crystals"
           value={fmt(crystals)}
           gradient="var(--gradient-crystal)"
-          glow="oklch(0.8 0.2 200 / 0.4)"
+          glow="transparent"
         />
 
         <ResourceBadge
           icon={<Zap className="h-4 w-4 text-green-950" strokeWidth={2.5} />}
           label="Energia"
           value={`${Math.floor(energy)}/${energyMax}`}
-          gradient="linear-gradient(135deg, oklch(0.85 0.2 140), oklch(0.65 0.22 160))"
-          glow="oklch(0.85 0.2 140 / 0.4)"
+          gradient="linear-gradient(135deg,#55e68a,#2bb673)"
+          glow="transparent"
         />
-
       </div>
     </header>
   );

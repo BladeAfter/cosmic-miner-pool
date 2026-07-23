@@ -2,31 +2,37 @@ import { motion } from "framer-motion";
 
 export function Planet() {
   return (
-    <div className="relative mx-auto grid aspect-square w-full max-w-[340px] place-items-center">
-      {/* outer glow */}
-      <div className="absolute inset-0 rounded-full bg-primary/30 blur-3xl animate-pulse-glow" />
+    <div className="relative mx-auto grid aspect-square w-full max-w-[320px] place-items-center">
 
-      {/* orbit rings */}
-      <div className="absolute inset-2 rounded-full border border-primary/20" />
-      <div className="absolute inset-8 rounded-full border border-accent/20" />
+      {/* Glow leve */}
+      <div
+        className="absolute inset-10 rounded-full opacity-20"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(90,140,255,.35) 0%, transparent 70%)",
+        }}
+      />
 
-      {/* orbiting drones */}
-      {[0, 1, 2].map((i) => (
+      {/* Órbitas */}
+      <div className="absolute inset-2 rounded-full border border-white/10" />
+      <div className="absolute inset-8 rounded-full border border-cyan-400/10" />
+
+      {/* Apenas 2 drones */}
+      {[0, 1].map((i) => (
         <motion.div
           key={i}
           className="absolute inset-0"
           animate={{ rotate: 360 }}
           transition={{
-            duration: 10 + i * 4,
+            duration: 20 + i * 8,
             repeat: Infinity,
             ease: "linear",
           }}
         >
           <div
-            className="absolute top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-lg glass"
+            className="absolute top-1/2 -translate-y-1/2 text-xl"
             style={{
-              left: `${5 + i * 3}%`,
-              boxShadow: "0 0 20px oklch(0.78 0.18 200 / 0.7)",
+              left: `${8 + i * 5}%`,
             }}
           >
             🛸
@@ -34,82 +40,44 @@ export function Planet() {
         </motion.div>
       ))}
 
-      {/* tiny ships */}
-      {[0, 1].map((i) => (
-        <motion.div
-          key={`ship-${i}`}
-          className="absolute inset-0"
-          animate={{ rotate: -360 }}
-          transition={{
-            duration: 16 + i * 6,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        >
-          <div
-            className="absolute top-1/2 -translate-y-1/2 text-xs"
-            style={{
-              right: `${2 + i * 6}%`,
-              filter: "drop-shadow(0 0 6px #7cf)",
-            }}
-          >
-            🚀
-          </div>
-        </motion.div>
-      ))}
-
-      {/* planet */}
+      {/* Planeta */}
       <motion.div
         animate={{ rotate: 360 }}
         transition={{
-          duration: 40,
+          duration: 80,
           repeat: Infinity,
           ease: "linear",
         }}
-        className="relative h-[62%] w-[62%] overflow-hidden rounded-full"
+        className="relative h-[62%] w-[62%] rounded-full overflow-hidden"
         style={{
           background:
-            "radial-gradient(circle at 30% 30%, oklch(0.85 0.2 200), oklch(0.55 0.25 275) 45%, oklch(0.2 0.1 275) 90%)",
-          boxShadow:
-            "inset -20px -30px 60px oklch(0.05 0.05 275 / 0.8), 0 0 50px oklch(0.72 0.2 300 / 0.6)",
+            "radial-gradient(circle at 30% 30%, #70d6ff, #3454d1 45%, #111827 95%)",
         }}
       >
-        <div className="absolute left-[20%] top-[30%] h-8 w-8 rounded-full bg-black/30 blur-sm" />
-        <div className="absolute left-[55%] top-[55%] h-12 w-12 rounded-full bg-black/25 blur-md" />
-        <div className="absolute left-[35%] top-[70%] h-6 w-6 rounded-full bg-black/30 blur-sm" />
-
-        <div
-          className="absolute inset-0 opacity-70 mix-blend-screen"
-          style={{
-            background:
-              "radial-gradient(circle at 70% 20%, oklch(0.85 0.25 320 / 0.5), transparent 40%), radial-gradient(circle at 20% 70%, oklch(0.8 0.22 200 / 0.5), transparent 40%)",
-          }}
-        />
+        <div className="absolute left-[22%] top-[28%] h-6 w-6 rounded-full bg-black/20" />
+        <div className="absolute left-[60%] top-[58%] h-10 w-10 rounded-full bg-black/20" />
       </motion.div>
 
-      {/* particles */}
-      {Array.from({ length: 14 }).map((_, i) => {
-        const angle = (i / 14) * Math.PI * 2;
-        const radius = 42 + (i % 5);
-        const duration = 2 + (i % 3) * 0.5;
+      {/* Apenas 6 partículas */}
+      {Array.from({ length: 6 }).map((_, i) => {
+        const angle = (i / 6) * Math.PI * 2;
+        const radius = 44;
 
         return (
           <motion.span
             key={i}
-            className="absolute h-1.5 w-1.5 rounded-full bg-accent"
+            className="absolute h-1 w-1 rounded-full bg-cyan-300"
             style={{
               left: `calc(50% + ${Math.cos(angle) * radius}%)`,
               top: `calc(50% + ${Math.sin(angle) * radius}%)`,
-              boxShadow: "0 0 8px oklch(0.85 0.2 200)",
             }}
             animate={{
-              opacity: [0.2, 1, 0.2],
-              scale: [0.6, 1.4, 0.6],
+              opacity: [0.3, 1, 0.3],
             }}
             transition={{
-              duration,
+              duration: 3,
               repeat: Infinity,
-              delay: i * 0.15,
+              delay: i * 0.4,
             }}
           />
         );

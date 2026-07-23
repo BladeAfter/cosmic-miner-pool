@@ -1,41 +1,61 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
-type Star = { id: number; top: number; left: number; size: number; delay: number; duration: number };
+type Star = {
+  id: number;
+  top: number;
+  left: number;
+  size: number;
+  delay: number;
+  duration: number;
+};
 
-export function Starfield({ count = 80 }: { count?: number }) {
-  const [stars, setStars] = useState<Star[]>([]);
-  useEffect(() => {
-    setStars(
-      Array.from({ length: count }).map((_, i) => ({
+export function Starfield({ count = 30 }: { count?: number }) {
+  const stars = useMemo<Star[]>(
+    () =>
+      Array.from({ length: count }, (_, i) => ({
         id: i,
         top: Math.random() * 100,
         left: Math.random() * 100,
-        size: Math.random() * 2 + 0.5,
-        delay: Math.random() * 4,
-        duration: 2 + Math.random() * 4,
-      }))
-    );
-  }, [count]);
+        size: Math.random() * 1.5 + 1,
+        delay: Math.random() * 3,
+        duration: 3 + Math.random() * 3,
+      })),
+    [count]
+  );
+
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {stars.map((s) => (
+      {stars.map((star) => (
         <span
-          key={s.id}
-          className="absolute rounded-full bg-white animate-twinkle"
+          key={star.id}
+          className="absolute rounded-full bg-white animate-twinkle opacity-80"
           style={{
-            top: `${s.top}%`,
-            left: `${s.left}%`,
-            width: s.size,
-            height: s.size,
-            animationDelay: `${s.delay}s`,
-            animationDuration: `${s.duration}s`,
-            boxShadow: "0 0 4px white",
+            top: `${star.top}%`,
+            left: `${star.left}%`,
+            width: `${star.size}px`,
+            height: `${star.size}px`,
+            animationDelay: `${star.delay}s`,
+            animationDuration: `${star.duration}s`,
           }}
         />
       ))}
-      <div className="absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
-      <div className="absolute top-1/3 -right-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
-      <div className="absolute bottom-0 -left-40 h-96 w-96 rounded-full bg-pool/20 blur-3xl" />
+
+      {/* Glow leve para celulares */}
+      <div
+        className="absolute -top-52 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full opacity-20"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(79,70,229,.5) 0%, transparent 70%)",
+        }}
+      />
+
+      <div
+        className="absolute bottom-0 left-0 h-72 w-72 opacity-15"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(56,189,248,.4) 0%, transparent 70%)",
+        }}
+      />
     </div>
   );
 }
