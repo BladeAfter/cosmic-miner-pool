@@ -5,8 +5,9 @@ import {
   Target,
   Wallet,
 } from "lucide-react";
+import { ReactNode } from "react";
 
-type Tab = "home" | "shop" | "pool" | "missions";
+type Tab = "shop" | "pool" | "missions" | "wallet";
 
 interface PlanetProps {
   onNavigate: (tab: Tab) => void;
@@ -15,7 +16,6 @@ interface PlanetProps {
 export function Planet({ onNavigate }: PlanetProps) {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[340px]">
-
       {/* Glow */}
       <div
         className="absolute inset-10 rounded-full opacity-20"
@@ -53,8 +53,7 @@ export function Planet({ onNavigate }: PlanetProps) {
       ))}
 
       {/* Planeta */}
-      <motion.button
-        onClick={() => onNavigate("home")}
+      <motion.div
         animate={{ rotate: 360 }}
         transition={{
           duration: 80,
@@ -69,7 +68,7 @@ export function Planet({ onNavigate }: PlanetProps) {
       >
         <div className="absolute left-[22%] top-[28%] h-6 w-6 rounded-full bg-black/20" />
         <div className="absolute left-[60%] top-[58%] h-10 w-10 rounded-full bg-black/20" />
-      </motion.button>
+      </motion.div>
 
       {/* Botões */}
 
@@ -98,7 +97,7 @@ export function Planet({ onNavigate }: PlanetProps) {
         icon={<Wallet size={28} />}
         label="Wallet"
         className="right-2 bottom-10"
-        onClick={() => alert("Wallet em desenvolvimento")}
+        onClick={() => onNavigate("wallet")}
       />
 
       {/* Partículas */}
@@ -131,7 +130,7 @@ export function Planet({ onNavigate }: PlanetProps) {
 }
 
 interface OrbitButtonProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   className?: string;
   onClick?: () => void;
