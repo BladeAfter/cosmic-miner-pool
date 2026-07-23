@@ -16,59 +16,175 @@ interface PlanetProps {
 export function Planet({ onNavigate }: PlanetProps) {
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[340px]">
-      {/* Glow */}
-      <div
-        className="absolute inset-10 rounded-full opacity-20"
+
+      {/* Glow animado */}
+      <motion.div
+        className="absolute inset-10 rounded-full"
+        animate={{
+          scale: [1, 1.08, 1],
+          opacity: [0.25, 0.45, 0.25],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+        }}
         style={{
           background:
-            "radial-gradient(circle, rgba(90,140,255,.35) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(70,170,255,.45) 0%, transparent 70%)",
         }}
       />
 
-      {/* Órbitas */}
-      <div className="absolute inset-2 rounded-full border border-white/10" />
-      <div className="absolute inset-8 rounded-full border border-cyan-400/10" />
-
-      {/* Drones */}
-      {[0, 1].map((i) => (
-        <motion.div
-          key={i}
-          className="absolute inset-0"
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 22 + i * 8,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        >
-          <div
-            className="absolute top-1/2 -translate-y-1/2 text-xl"
-            style={{
-              left: `${10 + i * 8}%`,
-            }}
-          >
-            🛸
-          </div>
-        </motion.div>
-      ))}
-
-      {/* Planeta */}
+      {/* Órbita externa */}
       <motion.div
         animate={{ rotate: 360 }}
+        transition={{
+          duration: 120,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="absolute inset-2 rounded-full border border-cyan-400/15"
+      />
+
+      {/* Órbita interna */}
+      <motion.div
+        animate={{ rotate: -360 }}
         transition={{
           duration: 80,
           repeat: Infinity,
           ease: "linear",
         }}
-        className="absolute left-1/2 top-1/2 h-[62%] w-[62%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle at 30% 30%, #70d6ff, #3454d1 45%, #111827 95%)",
+        className="absolute inset-8 rounded-full border border-white/10"
+      />
+
+   {/* Drones Mineradores */}
+{[0, 1, 2].map((i) => (
+  <motion.div
+    key={i}
+    className="absolute inset-0 z-20"
+    animate={{ rotate: 360 }}
+    transition={{
+      duration: 20 + i * 6,
+      repeat: Infinity,
+      ease: "linear",
+      delay: i * 2,
+    }}
+  >
+    <motion.div
+      className="absolute left-1/2 top-1/2 z-20"
+      style={{
+        transform: `rotate(${i * 120}deg) translateX(-110px)`,
+        transformOrigin: "center center",
+      }}
+      animate={{
+        rotate: -360,
+      }}
+      transition={{
+        duration: 20 + i * 6,
+        repeat: Infinity,
+        ease: "linear",
+      }}
+    >
+      {/* Drone */}
+      <motion.img
+        src="/drone.png"
+        alt="Drone"
+        draggable={false}
+        className="relative z-20 h-8 w-8 select-none drop-shadow-[0_0_12px_rgba(0,220,255,.8)]"
+        animate={{
+          scale: [1, 1.08, 1],
+          y: [-2, 2, -2],
         }}
-      >
-        <div className="absolute left-[22%] top-[28%] h-6 w-6 rounded-full bg-black/20" />
-        <div className="absolute left-[60%] top-[58%] h-10 w-10 rounded-full bg-black/20" />
-      </motion.div>
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+        }}
+      />
+
+  
+{/* Laser */}
+<motion.div
+  className="absolute left-1/2 top-1/2"
+  style={{
+    width: "2px",
+    height: "92px",
+    background:
+      "linear-gradient(to bottom, rgba(0,255,255,1), rgba(0,180,255,.5), transparent)",
+    transform: "translate(-50%, 12px)",
+    transformOrigin: "top center",
+    boxShadow: "0 0 10px cyan",
+    borderRadius: "999px",
+  }}
+  animate={{
+    opacity: [0.2, 1, 0.2],
+    scaleY: [0.8, 1.1, 0.8],
+  }}
+  transition={{
+    duration: 1,
+    repeat: Infinity,
+  }}
+/>
+
+</motion.div>
+</motion.div>
+))}
+
+
+      {/* Planeta */}
+      <motion.img
+        src="/planet-mining.png"
+        alt="Mining Planet"
+        draggable={false}
+        className="absolute left-1/2 top-1/2 z-10 w-[62%] -translate-x-1/2 -translate-y-1/2 select-none drop-shadow-[0_0_35px_rgba(0,180,255,.45)]"
+        animate={{
+          rotate: 360,
+          y: [-5, 5, -5],
+          scale: [1, 1.02, 1],
+        }}
+        transition={{
+          rotate: {
+            duration: 90,
+            repeat: Infinity,
+            ease: "linear",
+          },
+          y: {
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+          scale: {
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        }}
+      />
+
+      {/* Partículas */}
+      {Array.from({ length: 18 }).map((_, i) => {
+        const angle = (i / 18) * Math.PI * 2;
+        const radius = 38;
+
+        return (
+          <motion.span
+            key={i}
+            className="absolute h-1.5 w-1.5 rounded-full bg-cyan-300"
+            style={{
+              left: `${50 + Math.cos(angle) * radius}%`,
+              top: `${50 + Math.sin(angle) * radius}%`,
+              transform: "translate(-50%, -50%)",
+            }}
+            animate={{
+              opacity: [0.2, 1, 0.2],
+              scale: [1, 1.8, 1],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
+          />
+        );
+      })}
 
       {/* Botões */}
 
@@ -99,32 +215,6 @@ export function Planet({ onNavigate }: PlanetProps) {
         className="right-2 bottom-10"
         onClick={() => onNavigate("wallet")}
       />
-
-      {/* Partículas */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i / 8) * Math.PI * 2;
-        const radius = 34;
-
-        return (
-          <motion.span
-            key={i}
-            className="absolute h-1 w-1 rounded-full bg-cyan-300"
-            style={{
-              left: `${50 + Math.cos(angle) * radius}%`,
-              top: `${50 + Math.sin(angle) * radius}%`,
-              transform: "translate(-50%, -50%)",
-            }}
-            animate={{
-              opacity: [0.2, 1, 0.2],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              delay: i * 0.4,
-            }}
-          />
-        );
-      })}
     </div>
   );
 }
