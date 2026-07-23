@@ -37,11 +37,7 @@ export function TelegramProfile() {
           {user.first_name} {user.last_name ?? ""}
         </h2>
 
-        <p className="text-cyan-300">
-          @{user.username ?? "sem_username"}
-        </p>
-
-        <p className="text-xs text-gray-400">
+        <p className="mt-1 text-xs text-gray-400">
           ID: {user.id}
         </p>
 
