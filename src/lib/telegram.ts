@@ -1,3 +1,5 @@
+import { retrieveLaunchParams } from "@telegram-apps/sdk";
+
 export interface TelegramUser {
   id: number;
   is_bot?: boolean;
@@ -10,20 +12,15 @@ export interface TelegramUser {
 }
 
 export function getTelegramUser(): TelegramUser | null {
-  const tg = window.Telegram?.WebApp;
+  try {
+    const { tgWebAppData } = retrieveLaunchParams();
 
-  console.log("Telegram:", tg);
-  console.log("initData:", tg?.initData);
-  console.log("initDataUnsafe:", tg?.initDataUnsafe);
-  console.log("user:", tg?.initDataUnsafe?.user);
+    console.log("Launch Params:", tgWebAppData);
+    console.log("User:", tgWebAppData?.user);
 
-  if (!tg) {
-    console.warn("Telegram WebApp não encontrado.");
+    return (tgWebAppData?.user as TelegramUser) ?? null;
+  } catch (err) {
+    console.warn("Aplicação não está rodando dentro do Telegram.", err);
     return null;
   }
-
-  tg.ready();
-  tg.expand();
-
-  return tg.initDataUnsafe?.user ?? null;
 }

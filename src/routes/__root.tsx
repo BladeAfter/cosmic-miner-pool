@@ -137,6 +137,9 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
 
+        {/* Telegram WebApp SDK */}
+        <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
         <script
           async
           src="https://ad.gigapub.tech/script?id=7393"
@@ -157,14 +160,23 @@ function RootComponent() {
   useEffect(() => {
     const tg = (window as any).Telegram?.WebApp;
 
-    if (tg) {
-      tg.ready?.();
-      tg.expand?.();
-      tg.disableVerticalSwipes?.();
+    console.log("window.Telegram:", (window as any).Telegram);
 
-      document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
+    if (!tg) {
+      console.error("Telegram SDK não carregado.");
+      return;
     }
+
+    tg.ready();
+    tg.expand();
+    tg.disableVerticalSwipes?.();
+
+    console.log("initData:", tg.initData);
+    console.log("initDataUnsafe:", tg.initDataUnsafe);
+    console.log("user:", tg.initDataUnsafe?.user);
+
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
   }, []);
 
   return (
