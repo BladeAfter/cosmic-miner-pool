@@ -1,0 +1,67 @@
+.orbit-btn{
+    position:absolute;
+
+    width:72px;
+    height:72px;
+
+    border-radius:50%;
+
+    border:2px solid rgba(135,80,255,.5);
+
+    background:rgba(15,15,40,.75);
+
+    backdrop-filter:blur(20px);
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:4px;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.orbit-btn svg{
+    color:#70c7ff;
+}
+
+.orbit-btn span{
+    font-size:12px;
+    font-weight:700;
+}
+
+.orbit-btn:hover{
+
+    transform:scale(1.08);
+
+    box-shadow:
+    0 0 20px #7c3aed,
+    0 0 40px #4cc9ff;
+
+}
+
+.shop{
+    top:80px;
+    left:35px;
+}
+
+.pool{
+    top:80px;
+    right:35px;
+}
+
+.missions{
+    top:340px;
+    left:20px;
+}
+
+.wallet{
+    top:340px;
+    right:20px;
+}

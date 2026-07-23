@@ -1,11 +1,12 @@
 export interface TelegramUser {
   id: number;
+  is_bot?: boolean;
   first_name: string;
   last_name?: string;
   username?: string;
   language_code?: string;
-  photo_url?: string;
   is_premium?: boolean;
+  photo_url?: string;
 }
 
 export function getTelegramUser(): TelegramUser | null {
@@ -19,5 +20,5 @@ export function getTelegramUser(): TelegramUser | null {
   tg.ready();
   tg.expand();
 
-  return tg.initDataUnsafe.user ?? null;
+  return tg.initDataUnsafe?.user ?? null;
 }
