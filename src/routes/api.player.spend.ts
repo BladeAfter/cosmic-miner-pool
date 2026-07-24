@@ -1,80 +1,127 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../../lib/prisma";
 
 export async function POST({ request }: any) {
-
   try {
-
     const body = await request.json();
 
-    const telegramId = BigInt(body.telegramId);
-    const amount = BigInt(body.amount);
-
-
-    const player = await prisma.player.findUnique({
-      where:{
-        telegramId
-      }
-    });
-
-
-    if(!player){
+    if (!body.telegramId || body.amount === undefined) {
       return new Response(
-        JSON.stringify({error:"Jogador não encontrado"}),
-        {status:404}
+        JSON.stringify({
+          error: "Dados obrigatórios faltando",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
     }
 
 
-    if(player.coins < amount){
+    const telegramId = BigInt(body.telegramId);
+    const amountNumber = Number(body.amount);
 
+
+    if (isNaN(amountNumber) || amountNumber <= 0) {
       return new Response(
         JSON.stringify({
-          error:"Coins insuficientes"
+          error: "Valor inválido",
         }),
-        {status:400}
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
+    }
 
+
+    const amount = BigInt(amountNumber);
+
+
+    const player = await prisma.player.findUnique({
+      where: {
+        telegramId,
+      },
+    });
+
+
+    if (!player) {
+      return new Response(
+        JSON.stringify({
+          error: "Jogador não encontrado",
+        }),
+        {
+          status: 404,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+
+    if (player.coins < amount) {
+      return new Response(
+        JSON.stringify({
+          error: "Coins insuficientes",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
     }
 
 
     const updated = await prisma.player.update({
-
-      where:{
-        telegramId
+      where: {
+        telegramId,
       },
 
-      data:{
-        coins:{
-          decrement: amount
-        }
-      }
-
+      data: {
+        coins: {
+          decrement: amount,
+        },
+      },
     });
 
 
     return new Response(
       JSON.stringify({
-        coins: updated.coins.toString()
+        success: true,
+        coins: updated.coins.toString(),
       }),
       {
-        headers:{
-          "Content-Type":"application/json"
-        }
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
 
 
-  } catch(e){
+  } catch (error) {
 
-    console.error(e);
+    console.error(
+      "SPEND COINS ERROR:",
+      error
+    );
+
 
     return new Response(
       JSON.stringify({
-        error:"Erro"
+        error: "Erro interno",
       }),
-      {status:500}
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
-
   }
-
 }

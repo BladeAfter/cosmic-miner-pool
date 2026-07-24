@@ -1,142 +1,227 @@
 import { prisma } from "../lib/prisma";
 
+
+function formatPlayer(player: any) {
+  return {
+    ...player,
+
+    telegramId:
+      player.telegramId.toString(),
+
+    coins:
+      player.coins.toString(),
+  };
+}
+
+
+
 export async function GET({ request }: any) {
+
   try {
+
     const url = new URL(request.url);
 
-    const telegramId = url.searchParams.get("telegramId");
+    const telegramId =
+      url.searchParams.get("telegramId");
+
 
     if (!telegramId) {
+
       return new Response(
         JSON.stringify({
-          error: "telegramId obrigatório",
+          error:"telegramId obrigatório",
         }),
-        { status: 400 }
+        {
+          status:400,
+        }
       );
+
     }
 
 
-    const player = await prisma.player.findUnique({
-      where: {
-        telegramId: BigInt(telegramId),
-      },
-    });
+    const player =
+      await prisma.player.findUnique({
+
+        where:{
+          telegramId:BigInt(telegramId),
+        },
+
+      });
+
 
 
     if (!player) {
+
       return new Response(
         JSON.stringify({
-          error: "Jogador não encontrado",
+          error:"Jogador não encontrado",
         }),
-        { status: 404 }
+        {
+          status:404,
+        }
       );
+
     }
 
 
+
     return new Response(
-      JSON.stringify({
-        ...player,
 
-        telegramId:
-          player.telegramId.toString(),
+      JSON.stringify(
+        formatPlayer(player)
+      ),
 
-        coins:
-          player.coins.toString(),
-      }),
       {
-        headers: {
-          "Content-Type": "application/json",
+        headers:{
+          "Content-Type":
+          "application/json",
         },
       }
+
     );
 
 
-  } catch (error) {
+  } catch(error) {
+
 
     console.error(
       "GET PLAYER ERROR:",
       error
     );
 
+
     return new Response(
       JSON.stringify({
-        error: "Erro interno",
+        error:"Erro interno",
       }),
       {
-        status: 500,
+        status:500,
       }
     );
+
   }
+
 }
+
+
 
 
 
 export async function POST({ request }: any) {
 
+
   try {
 
-    const body = await request.json();
+
+    const body =
+      await request.json();
 
 
-    const telegramId =
-      body.telegramId
-        ? BigInt(body.telegramId)
-        : null;
 
+    /*
+      SALVAR PROGRESSO
+    */
 
-    // Atualizar moedas do jogador
-    if (body.id && body.coins !== undefined) {
+    if(body.id) {
+
 
       const player =
         await prisma.player.update({
-          where: {
-            id: Number(body.id),
+
+          where:{
+            id:Number(body.id),
           },
 
-          data: {
-            coins: BigInt(
-              body.coins
-            ),
+
+          data:{
+
+
+            coins:
+              body.coins !== undefined
+              ? BigInt(body.coins)
+              : undefined,
+
+
+            level:
+              body.level,
+
+
+            energy:
+              body.energy,
+
+
+            skills:
+              body.skills,
+
+
+            owned:
+              body.owned,
+
+
+            missions:
+              body.missions,
+
+
           },
+
         });
 
 
+
       return new Response(
-        JSON.stringify({
-          ...player,
 
-          telegramId:
-            player.telegramId.toString(),
+        JSON.stringify(
+          formatPlayer(player)
+        ),
 
-          coins:
-            player.coins.toString(),
-        }),
         {
-          headers: {
-            "Content-Type": "application/json",
+          headers:{
+            "Content-Type":
+            "application/json",
           },
         }
+
       );
+
+
     }
 
 
 
-    if (!telegramId) {
+
+    /*
+      CRIAR / CARREGAR JOGADOR
+    */
+
+
+    if(!body.telegramId) {
+
 
       return new Response(
+
         JSON.stringify({
-          error: "telegramId obrigatório",
+          error:"telegramId obrigatório",
         }),
+
         {
           status:400,
         }
+
       );
+
     }
+
+
+
+    const telegramId =
+      BigInt(body.telegramId);
+
 
 
 
     const player =
       await prisma.player.upsert({
+
 
         where:{
           telegramId,
@@ -145,62 +230,77 @@ export async function POST({ request }: any) {
 
         update:{
 
+
           username:
             body.username,
 
+
           firstName:
             body.firstName,
+
 
         },
 
 
         create:{
 
+
           telegramId,
+
 
           username:
             body.username,
 
+
           firstName:
             body.firstName,
 
+
           coins:0,
+
 
           level:1,
 
+
           energy:100,
 
+
+          skills:null,
+
+
+          owned:null,
+
+
+          missions:null,
+
+
         },
+
 
       });
 
 
 
+
     return new Response(
 
-      JSON.stringify({
-
-        ...player,
-
-        telegramId:
-          player.telegramId.toString(),
-
-        coins:
-          player.coins.toString(),
-
-      }),
+      JSON.stringify(
+        formatPlayer(player)
+      ),
 
       {
         headers:{
           "Content-Type":
-            "application/json",
+          "application/json",
         },
       }
 
     );
 
 
-  } catch(error){
+
+  } catch(error) {
+
 
     console.error(
       "POST PLAYER ERROR:",
