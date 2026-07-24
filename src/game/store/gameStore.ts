@@ -39,12 +39,12 @@ export const useGame = create<GameState>()(
       energyMax: 100,
 
 
-      xp: 240,
+      xp: 0,
       level: 1,
 
 
       droneCount: 3,
-      droneProgress: 0.42,
+      droneProgress: 0,
 
 
       adsWatchedToday: 0,
@@ -56,39 +56,60 @@ export const useGame = create<GameState>()(
       missions: initialMissions,
 
 
+setPlayer: (player) => {
 
-      setPlayer: (player) =>
-        set({
+  set({
 
-          playerId: player.id,
-
-          gold: Number(player.coins),
-
-          level: player.level,
-
-          energy: player.energy,
+    playerId: player.id,
 
 
-          skills:
-            player.skills ?? initialSkills,
+    gold:
+      Number(player.coins ?? 0),
 
 
-          owned:
-            player.owned ?? [],
+    level:
+      Number(player.level ?? 1),
 
 
-          missions:
-            player.missions ?? initialMissions,
-
-        }),
+    energy:
+      Number(player.energy ?? 100),
 
 
+
+    skills:
+      player.skills
+        ? player.skills
+        : initialSkills,
+
+
+
+    owned:
+      player.owned
+        ? player.owned
+        : [],
+
+
+
+    missions:
+      player.missions
+        ? player.missions
+        : initialMissions,
+
+  });
+
+},
 
       savePlayer: async () => {
 
+
         const state = get();
 
-        if (!state.playerId) return;
+
+        if(!state.playerId) {
+          console.log("Sem playerId");
+          return;
+        }
+
 
 
         await fetch("/api/player/save", {
@@ -102,39 +123,69 @@ export const useGame = create<GameState>()(
 
           body:JSON.stringify({
 
-            id: state.playerId,
+            id:
+              state.playerId,
 
-            coins: state.gold,
 
-            level: state.level,
+            coins:
+              Math.floor(state.gold),
 
-            energy: state.energy,
 
-            skills: state.skills,
+            level:
+              state.level,
 
-            owned: state.owned,
 
-            missions: state.missions,
+            energy:
+              state.energy,
+
+
+            skills:
+              state.skills,
+
+
+            owned:
+              state.owned,
+
+
+            missions:
+              state.missions,
+
 
           }),
 
+
         });
+
+
+        console.log(
+          "PLAYER SALVO",
+          state.gold,
+          state.level
+        );
 
       },
 
 
 
-      addPurchaseToPool: (tonValue) =>
+
+      addPurchaseToPool:(tonValue)=>{
+
         set((state)=>({
 
           pool:
-            state.pool + tonValue * 0.5,
+            state.pool +
+            tonValue * 0.5
 
-        })),
+        }));
+
+        get().savePlayer();
+
+      },
 
 
 
-      upgradeSkill: (id) => {
+
+      upgradeSkill:(id)=>{
 
         upgradeSkill(set)(id);
 
@@ -142,13 +193,14 @@ export const useGame = create<GameState>()(
 
           get().savePlayer();
 
-        },100);
+        },300);
 
       },
 
 
 
-      buyItem: (item) => {
+
+      buyItem:(item)=>{
 
         buyItem(set)(item);
 
@@ -156,16 +208,17 @@ export const useGame = create<GameState>()(
 
           get().savePlayer();
 
-        },100);
+        },300);
 
       },
 
 
 
-      unlockLegendary: (itemId,cost)=>{
+
+      unlockLegendary:(id,cost)=>{
 
         unlockLegendary(set)(
-          itemId,
+          id,
           cost
         );
 
@@ -174,13 +227,16 @@ export const useGame = create<GameState>()(
 
           get().savePlayer();
 
-        },100);
+        },300);
+
 
       },
 
 
 
+
       claimMission:(id)=>{
+
 
         claimMission(set)(id);
 
@@ -189,25 +245,29 @@ export const useGame = create<GameState>()(
 
           get().savePlayer();
 
-        },100);
+        },300);
+
 
       },
 
 
 
-      watchAd: async (telegramId:string)=>{
+
+      watchAd:async(telegramId:string)=>{
 
 
-        if(!canWatchAd()) return;
+        if(!canWatchAd())
+          return;
 
 
-        const success =
+        const ok =
           await registerAdWatch(
             telegramId
           );
 
 
-        if(!success) return;
+        if(!ok)
+          return;
 
 
 
@@ -229,13 +289,13 @@ export const useGame = create<GameState>()(
             Number(player.coins),
 
 
+
           adsWatchedToday:
             getAdsData().watched,
 
 
           lastAdReset:
             getAdsData().date,
-
 
 
           missions:
@@ -253,24 +313,24 @@ export const useGame = create<GameState>()(
                     m.progress+1,
                     m.goal
                   )
-
               }
 
               :
 
               m
 
-            ),
-
+            )
 
         }));
+
 
 
       },
 
 
 
-      tick: productionTick(set),
+      tick:
+        productionTick(set),
 
 
     }),
@@ -279,8 +339,8 @@ export const useGame = create<GameState>()(
 
     {
 
-
-      name:"space-miner-save",
+      name:
+        "space-miner-save",
 
 
       skipHydration:true,
@@ -349,14 +409,19 @@ export const useGame = create<GameState>()(
         missions:
           state.missions,
 
+
       }),
 
 
 
-      onRehydrateStorage:()=> (state)=>{
+
+      onRehydrateStorage:()=>(
+        state
+      )=>{
 
 
-        if(!state) return;
+        if(!state)
+          return;
 
 
         const ads =

@@ -19,22 +19,18 @@ model Player {
   firstName  String?
 
 
-  // moedas principais
   coins      BigInt   @default(0)
 
-
-  // progresso
   level      Int      @default(1)
 
   energy     Int      @default(100)
 
 
-  // dados do jogo
-  skills     Json?
+  skills     Json     @default("[]")
 
-  owned      Json?
+  owned      Json     @default("[]")
 
-  missions   Json?
+  missions   Json     @default("[]")
 
 
   createdAt  DateTime @default(now())
