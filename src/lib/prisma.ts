@@ -10,16 +10,14 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   (() => {
-    const url = process.env.DATABASE_URL;
+    const connectionString = process.env.DATABASE_URL;
 
-    console.log("DATABASE_URL existe:", !!url);
-
-    if (!url) {
+    if (!connectionString) {
       throw new Error("DATABASE_URL não encontrada");
     }
 
     const adapter = new PrismaPg({
-      connectionString: url,
+      connectionString,
     });
 
     return new PrismaClient({
