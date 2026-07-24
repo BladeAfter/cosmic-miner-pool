@@ -109,62 +109,60 @@ export async function GET({ request }: any) {
 
 export async function POST({ request }: any) {
 
-
   try {
 
-
-    const body =
-      await request.json();
+    const body = await request.json();
 
 
 
-    /*
-      SALVAR PROGRESSO
-    */
+    // =========================
+    // SALVAR PROGRESSO
+    // =========================
 
-    if(body.id) {
+    if (body.id) {
 
+      const player = await prisma.player.update({
 
-      const player =
-        await prisma.player.update({
-
-          where:{
-            id:Number(body.id),
-          },
+        where:{
+          id:Number(body.id),
+        },
 
 
-          data:{
+        data:{
 
 
-            coins:
-              body.coins !== undefined
-              ? BigInt(body.coins)
-              : undefined,
+          coins:
+            body.coins !== undefined
+            ? BigInt(body.coins)
+            : undefined,
 
 
-            level:
-              body.level,
+          level:
+            body.level !== undefined
+            ? Number(body.level)
+            : undefined,
 
 
-            energy:
-              body.energy,
+          energy:
+            body.energy !== undefined
+            ? Number(body.energy)
+            : undefined,
 
 
-            skills:
-              body.skills,
+          skills:
+            body.skills ?? undefined,
 
 
-            owned:
-              body.owned,
+          owned:
+            body.owned ?? undefined,
 
 
-            missions:
-              body.missions,
+          missions:
+            body.missions ?? undefined,
 
+        },
 
-          },
-
-        });
+      });
 
 
 
@@ -176,26 +174,23 @@ export async function POST({ request }: any) {
 
         {
           headers:{
-            "Content-Type":
-            "application/json",
+            "Content-Type":"application/json",
           },
         }
 
       );
-
 
     }
 
 
 
 
-    /*
-      CRIAR / CARREGAR JOGADOR
-    */
+    // =========================
+    // CRIAR / BUSCAR JOGADOR
+    // =========================
 
 
-    if(!body.telegramId) {
-
+    if(!body.telegramId){
 
       return new Response(
 
@@ -215,7 +210,6 @@ export async function POST({ request }: any) {
 
     const telegramId =
       BigInt(body.telegramId);
-
 
 
 
@@ -265,20 +259,19 @@ export async function POST({ request }: any) {
           energy:100,
 
 
-          skills:null,
+          skills:[],
 
 
-          owned:null,
+          owned:[],
 
 
-          missions:null,
+          missions:[],
 
 
         },
 
 
       });
-
 
 
 
@@ -290,8 +283,7 @@ export async function POST({ request }: any) {
 
       {
         headers:{
-          "Content-Type":
-          "application/json",
+          "Content-Type":"application/json",
         },
       }
 
@@ -299,7 +291,7 @@ export async function POST({ request }: any) {
 
 
 
-  } catch(error) {
+  } catch(error){
 
 
     console.error(
