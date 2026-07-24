@@ -1,5 +1,21 @@
 import { State, ShopItem } from "./types";
 
+async function saveCoins(playerId: number | null, coins: number) {
+  if (!playerId) return;
+
+  await fetch("/api/player", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: playerId,
+      coins,
+    }),
+  });
+}
+
+
 export const upgradeSkill =
   (set: any) =>
   (id: string) =>
@@ -12,8 +28,12 @@ export const upgradeSkill =
 
       if (s.gold < cost) return s;
 
+      const newGold = s.gold - cost;
+
+      saveCoins(s.playerId, newGold);
+
       return {
-        gold: s.gold - cost,
+        gold: newGold,
 
         skills: s.skills.map((sk) =>
           sk.id === id
@@ -35,17 +55,24 @@ export const upgradeSkill =
       };
     });
 
+
 export const buyItem =
   (set: any) =>
   (item: ShopItem) =>
     set((s: State) => {
+
       if (item.priceGold != null) {
+
         if (s.gold < item.priceGold) return s;
+
+        const newGold = s.gold - item.priceGold;
+
+        saveCoins(s.playerId, newGold);
 
         const tonEquivalent = item.priceGold / 100000;
 
         return {
-          gold: s.gold - item.priceGold,
+          gold: newGold,
 
           pool: s.pool + tonEquivalent * 0.5,
 
@@ -63,20 +90,18 @@ export const buyItem =
                   ...m,
                   progress: Math.min(m.progress + 1, m.goal),
                 }
-              : m.id === "w2" && item.category === "boosters"
-              ? {
-                  ...m,
-                  progress: Math.min(m.progress + 1, m.goal),
-                }
               : m
           ),
         };
       }
 
+
       if (item.priceTon != null) {
+
         if (s.ton < item.priceTon) return s;
 
         return {
+
           ton: s.ton - item.priceTon,
 
           pool: s.pool + item.priceTon * 0.5,
@@ -89,32 +114,24 @@ export const buyItem =
             },
           ],
 
-          missions: s.missions.map((m) =>
-            m.id === "w1"
-              ? {
-                  ...m,
-                  progress: Math.min(m.progress + 1, m.goal),
-                }
-              : m.id === "w2" && item.category === "boosters"
-              ? {
-                  ...m,
-                  progress: Math.min(m.progress + 1, m.goal),
-                }
-              : m
-          ),
         };
       }
 
+
       return s;
     });
+
+
 
 export const unlockLegendary =
   (set: any) =>
   (itemId: string, cost: number) =>
     set((s: State) => {
+
       if (s.ton < cost) return s;
 
       return {
+
         ton: s.ton - cost,
 
         pool: s.pool + cost * 0.5,
@@ -127,26 +144,58 @@ export const unlockLegendary =
               }
             : o
         ),
+
       };
     });
+
+
 
 export const claimMission =
   (set: any) =>
   (id: string) =>
     set((s: State) => {
-      const mission = s.missions.find((m) => m.id === id);
+
+      const mission = s.missions.find(
+        (m) => m.id === id
+      );
 
       if (!mission) return s;
 
-      if (mission.progress < mission.goal) return s;
+      if (mission.progress < mission.goal)
+        return s;
+
+
+      const reward =
+        mission.reward.gold ?? 0;
+
+
+      const newGold =
+        s.gold + reward;
+
+
+      saveCoins(
+        s.playerId,
+        newGold
+      );
+
 
       return {
-        gold: s.gold + (mission.reward.gold ?? 0),
 
-        crystals: s.crystals + (mission.reward.crystals ?? 0),
+        gold: newGold,
 
-        ton: s.ton + (mission.reward.ton ?? 0),
+        crystals:
+          s.crystals +
+          (mission.reward.crystals ?? 0),
 
-        missions: s.missions.filter((m) => m.id !== id),
+        ton:
+          s.ton +
+          (mission.reward.ton ?? 0),
+
+        missions:
+          s.missions.filter(
+            (m) => m.id !== id
+          ),
+
       };
+
     });

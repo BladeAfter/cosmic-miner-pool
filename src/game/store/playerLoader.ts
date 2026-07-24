@@ -9,22 +9,43 @@ export async function loadPlayer() {
     return;
   }
 
-  const response = await fetch("/api/player", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  });
+  try {
+    const response = await fetch("/api/player", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
 
-  if (!response.ok) {
-    console.error("Erro ao carregar jogador");
-    return;
+
+    if (!response.ok) {
+      console.error(
+        "Erro ao carregar jogador:",
+        await response.text()
+      );
+      return;
+    }
+
+
+    const player = await response.json();
+
+
+    console.log(
+      "Jogador carregado do banco:",
+      player
+    );
+
+
+    useGame.getState().setPlayer(player);
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro de conexão com servidor:",
+      error
+    );
+
   }
-
-  const player = await response.json();
-
-  console.log("Jogador carregado:", player);
-
-  useGame.getState().setPlayer(player);
 }

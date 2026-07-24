@@ -1,82 +1,225 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { prisma } from "../lib/prisma";
 
-export const Route = createFileRoute("/api/player")({
-  server: {
-    handlers: {
-      POST: async ({ request }) => {
-        try {
-          const user = await request.json();
+export async function GET({ request }: any) {
+  try {
+    const url = new URL(request.url);
 
-          console.log("Telegram user:", user);
+    const telegramId = url.searchParams.get("telegramId");
 
-          if (!user?.id) {
-            return Response.json(
-              {
-                error: "Usuário Telegram inválido",
-              },
-              {
-                status: 400,
-              }
-            );
-          }
+    if (!telegramId) {
+      return new Response(
+        JSON.stringify({
+          error: "telegramId obrigatório",
+        }),
+        { status: 400 }
+      );
+    }
 
-          const telegramId = BigInt(user.id);
 
-          const player = await prisma.player.upsert({
-            where: {
-              telegramId,
-            },
-
-            update: {
-              username: user.username ?? null,
-              firstName: user.first_name ?? null,
-            },
-
-            create: {
-              telegramId,
-
-              username: user.username ?? null,
-
-              firstName: user.first_name ?? null,
-
-              coins: BigInt(1250),
-
-              level: 1,
-
-              energy: 100,
-            },
-          });
-
-          return Response.json({
-            id: player.telegramId.toString(),
-
-            name: player.firstName,
-
-            coins: player.coins.toString(),
-
-            level: player.level,
-
-            energy: player.energy,
-          });
-
-        } catch (error) {
-          console.error("PLAYER API ERROR:", error);
-
-          return Response.json(
-            {
-              error: "Erro interno do servidor",
-              details:
-                error instanceof Error
-                  ? error.message
-                  : String(error),
-            },
-            {
-              status: 500,
-            }
-          );
-        }
+    const player = await prisma.player.findUnique({
+      where: {
+        telegramId: BigInt(telegramId),
       },
-    },
-  },
-});
+    });
+
+
+    if (!player) {
+      return new Response(
+        JSON.stringify({
+          error: "Jogador não encontrado",
+        }),
+        { status: 404 }
+      );
+    }
+
+
+    return new Response(
+      JSON.stringify({
+        ...player,
+
+        telegramId:
+          player.telegramId.toString(),
+
+        coins:
+          player.coins.toString(),
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "GET PLAYER ERROR:",
+      error
+    );
+
+    return new Response(
+      JSON.stringify({
+        error: "Erro interno",
+      }),
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+
+
+export async function POST({ request }: any) {
+
+  try {
+
+    const body = await request.json();
+
+
+    const telegramId =
+      body.telegramId
+        ? BigInt(body.telegramId)
+        : null;
+
+
+    // Atualizar moedas do jogador
+    if (body.id && body.coins !== undefined) {
+
+      const player =
+        await prisma.player.update({
+          where: {
+            id: Number(body.id),
+          },
+
+          data: {
+            coins: BigInt(
+              body.coins
+            ),
+          },
+        });
+
+
+      return new Response(
+        JSON.stringify({
+          ...player,
+
+          telegramId:
+            player.telegramId.toString(),
+
+          coins:
+            player.coins.toString(),
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
+
+
+
+    if (!telegramId) {
+
+      return new Response(
+        JSON.stringify({
+          error: "telegramId obrigatório",
+        }),
+        {
+          status:400,
+        }
+      );
+    }
+
+
+
+    const player =
+      await prisma.player.upsert({
+
+        where:{
+          telegramId,
+        },
+
+
+        update:{
+
+          username:
+            body.username,
+
+          firstName:
+            body.firstName,
+
+        },
+
+
+        create:{
+
+          telegramId,
+
+          username:
+            body.username,
+
+          firstName:
+            body.firstName,
+
+          coins:0,
+
+          level:1,
+
+          energy:100,
+
+        },
+
+      });
+
+
+
+    return new Response(
+
+      JSON.stringify({
+
+        ...player,
+
+        telegramId:
+          player.telegramId.toString(),
+
+        coins:
+          player.coins.toString(),
+
+      }),
+
+      {
+        headers:{
+          "Content-Type":
+            "application/json",
+        },
+      }
+
+    );
+
+
+  } catch(error){
+
+    console.error(
+      "POST PLAYER ERROR:",
+      error
+    );
+
+
+    return new Response(
+
+      JSON.stringify({
+        error:"Erro interno",
+      }),
+
+      {
+        status:500,
+      }
+
+    );
+
+  }
+
+}
