@@ -7,21 +7,38 @@ datasource db {
   provider = "postgresql"
 }
 
+
 model Player {
+
   id         Int      @id @default(autoincrement())
+
   telegramId BigInt   @unique
 
   username   String?
+
   firstName  String?
 
+
+  // moedas principais
   coins      BigInt   @default(0)
+
+
+  // progresso
   level      Int      @default(1)
+
   energy     Int      @default(100)
 
+
+  // dados do jogo
   skills     Json?
+
   owned      Json?
+
   missions   Json?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  createdAt  DateTime @default(now())
+
+  updatedAt  DateTime @updatedAt
+
 }
