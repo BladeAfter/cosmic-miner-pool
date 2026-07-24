@@ -25,6 +25,11 @@ export const useGame = create<GameState>()(
   persist(
     (set) => ({
       // =========================
+      // Jogador
+      // =========================
+      playerId: null,
+
+      // =========================
       // Recursos
       // =========================
       gold: 1250,
@@ -57,6 +62,14 @@ export const useGame = create<GameState>()(
       // Ações
       // =========================
 
+      setPlayer: (player) =>
+        set({
+          playerId: player.id,
+          gold: Number(player.coins),
+          level: player.level,
+          energy: player.energy,
+        }),
+
       addPurchaseToPool: (tonValue) =>
         set((state) => ({
           pool: state.pool + tonValue * 0.5,
@@ -84,7 +97,10 @@ export const useGame = create<GameState>()(
             m.id === "d3"
               ? {
                   ...m,
-                  progress: Math.min(m.progress + 1, m.goal),
+                  progress: Math.min(
+                    m.progress + 1,
+                    m.goal
+                  ),
                 }
               : m
           ),
@@ -93,12 +109,15 @@ export const useGame = create<GameState>()(
 
       tick: productionTick(set),
     }),
+
     {
       name: "space-miner-save",
 
       skipHydration: true,
 
       partialize: (state) => ({
+        playerId: state.playerId,
+
         gold: state.gold,
         crystals: state.crystals,
         ton: state.ton,

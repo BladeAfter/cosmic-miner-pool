@@ -1,3 +1,4 @@
+import { loadPlayer } from "../store/playerLoader";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -21,7 +22,9 @@ export function GameShell() {
   const [loading, setLoading] = useState(true);
 
   const tick = useGame((state) => state.tick);
-
+useEffect(() => {
+  loadPlayer();
+}, []);
   useEffect(() => {
     let last = performance.now();
 
