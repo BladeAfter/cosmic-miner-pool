@@ -8,35 +8,20 @@ datasource db {
 }
 
 model Player {
+  id         Int      @id @default(autoincrement())
+  telegramId BigInt   @unique
 
-  id Int @id @default(autoincrement())
+  username   String?
+  firstName  String?
 
-  telegramId BigInt @unique
+  coins      BigInt   @default(0)
+  level      Int      @default(1)
+  energy     Int      @default(100)
 
-  username String?
-
-  firstName String?
-
-
-  // Economia
-  coins BigInt @default(0)
-
-
-  // Progresso
-  level Int @default(1)
-
-  energy Int @default(100)
-
-
-  // Dados do jogo
-  skills Json?
-
-  owned Json?
-
-  missions Json?
-
+  skills     Json?
+  owned      Json?
+  missions   Json?
 
   createdAt DateTime @default(now())
-
   updatedAt DateTime @updatedAt
 }

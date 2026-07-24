@@ -23,112 +23,210 @@ import { productionTick } from "./production";
 
 export const useGame = create<GameState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
 
-      // =========================
-      // Jogador
-      // =========================
+
       playerId: null,
 
 
-      // =========================
-      // Recursos
-      // =========================
       gold: 0,
       crystals: 340,
-      ton: 2.35,
+      ton: 0,
       pool: 0,
 
 
-      // Energia
-      energy: 85,
+      energy: 100,
       energyMax: 100,
 
 
-      // Progressão
       xp: 240,
-      level: 7,
+      level: 1,
 
 
-      // Drones
       droneCount: 3,
       droneProgress: 0.42,
 
 
-      // Anúncios
       adsWatchedToday: 0,
       lastAdReset: "",
 
 
-      // Dados
       skills: initialSkills,
       owned: [],
       missions: initialMissions,
 
 
-      // =========================
-      // Banco
-      // =========================
 
       setPlayer: (player) =>
         set({
+
           playerId: player.id,
+
           gold: Number(player.coins),
+
           level: player.level,
+
           energy: player.energy,
+
+
+          skills:
+            player.skills ?? initialSkills,
+
+
+          owned:
+            player.owned ?? [],
+
+
+          missions:
+            player.missions ?? initialMissions,
+
         }),
 
 
+
+      savePlayer: async () => {
+
+        const state = get();
+
+        if (!state.playerId) return;
+
+
+        await fetch("/api/player/save", {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json",
+          },
+
+
+          body:JSON.stringify({
+
+            id: state.playerId,
+
+            coins: state.gold,
+
+            level: state.level,
+
+            energy: state.energy,
+
+            skills: state.skills,
+
+            owned: state.owned,
+
+            missions: state.missions,
+
+          }),
+
+        });
+
+      },
+
+
+
       addPurchaseToPool: (tonValue) =>
-        set((state) => ({
-          pool: state.pool + tonValue * 0.5,
+        set((state)=>({
+
+          pool:
+            state.pool + tonValue * 0.5,
+
         })),
 
 
-      // =========================
-      // Ações
-      // =========================
 
-      upgradeSkill: upgradeSkill(set),
+      upgradeSkill: (id) => {
 
-      buyItem: buyItem(set),
+        upgradeSkill(set)(id);
 
-      unlockLegendary: unlockLegendary(set),
+        setTimeout(()=>{
 
-      claimMission: claimMission(set),
+          get().savePlayer();
 
+        },100);
 
-
-      // =========================
-      // Anúncio recompensa
-      // =========================
-
-      watchAd: async (telegramId: string) => {
-
-        if (!canWatchAd()) return;
+      },
 
 
-        const success = await registerAdWatch(
-          telegramId
+
+      buyItem: (item) => {
+
+        buyItem(set)(item);
+
+        setTimeout(()=>{
+
+          get().savePlayer();
+
+        },100);
+
+      },
+
+
+
+      unlockLegendary: (itemId,cost)=>{
+
+        unlockLegendary(set)(
+          itemId,
+          cost
         );
 
 
-        if (!success) return;
+        setTimeout(()=>{
+
+          get().savePlayer();
+
+        },100);
+
+      },
 
 
 
-        const response = await fetch(
-          `/api/player?telegramId=${telegramId}`
-        );
+      claimMission:(id)=>{
+
+        claimMission(set)(id);
 
 
-        const player = await response.json();
+        setTimeout(()=>{
+
+          get().savePlayer();
+
+        },100);
+
+      },
 
 
 
-        set((state) => ({
+      watchAd: async (telegramId:string)=>{
 
-          gold: Number(player.coins),
+
+        if(!canWatchAd()) return;
+
+
+        const success =
+          await registerAdWatch(
+            telegramId
+          );
+
+
+        if(!success) return;
+
+
+
+        const response =
+          await fetch(
+            `/api/player?telegramId=${telegramId}`
+          );
+
+
+        const player =
+          await response.json();
+
+
+
+        set((state)=>({
+
+
+          gold:
+            Number(player.coins),
 
 
           adsWatchedToday:
@@ -139,19 +237,34 @@ export const useGame = create<GameState>()(
             getAdsData().date,
 
 
-          missions: state.missions.map((m) =>
-            m.id === "d3"
-              ? {
-                  ...m,
-                  progress: Math.min(
-                    m.progress + 1,
+
+          missions:
+            state.missions.map((m)=>
+
+              m.id==="d3"
+
+              ?
+
+              {
+                ...m,
+
+                progress:
+                  Math.min(
+                    m.progress+1,
                     m.goal
-                  ),
-                }
-              : m
-          ),
+                  )
+
+              }
+
+              :
+
+              m
+
+            ),
+
 
         }));
+
 
       },
 
@@ -159,47 +272,62 @@ export const useGame = create<GameState>()(
 
       tick: productionTick(set),
 
+
     }),
+
 
 
     {
 
 
-      name: "space-miner-save",
+      name:"space-miner-save",
 
 
-      skipHydration: true,
+      skipHydration:true,
 
 
 
-      partialize: (state) => ({
-
-        playerId: state.playerId,
+      partialize:(state)=>({
 
 
-        // NÃO salva gold
-        // vem sempre do Neon
-
-        crystals: state.crystals,
-
-        ton: state.ton,
-
-        pool: state.pool,
+        playerId:
+          state.playerId,
 
 
-        energy: state.energy,
-
-        energyMax: state.energyMax,
-
-
-        xp: state.xp,
-
-        level: state.level,
+        crystals:
+          state.crystals,
 
 
-        droneCount: state.droneCount,
+        ton:
+          state.ton,
 
-        droneProgress: state.droneProgress,
+
+        pool:
+          state.pool,
+
+
+        energy:
+          state.energy,
+
+
+        energyMax:
+          state.energyMax,
+
+
+        xp:
+          state.xp,
+
+
+        level:
+          state.level,
+
+
+        droneCount:
+          state.droneCount,
+
+
+        droneProgress:
+          state.droneProgress,
 
 
         adsWatchedToday:
@@ -210,22 +338,29 @@ export const useGame = create<GameState>()(
           state.lastAdReset,
 
 
-        skills: state.skills,
+        skills:
+          state.skills,
 
-        owned: state.owned,
 
-        missions: state.missions,
+        owned:
+          state.owned,
+
+
+        missions:
+          state.missions,
 
       }),
 
 
 
-      onRehydrateStorage: () => (state) => {
-
-        if (!state) return;
+      onRehydrateStorage:()=> (state)=>{
 
 
-        const ads = getAdsData();
+        if(!state) return;
+
+
+        const ads =
+          getAdsData();
 
 
         state.adsWatchedToday =
@@ -235,9 +370,12 @@ export const useGame = create<GameState>()(
         state.lastAdReset =
           ads.date;
 
+
       },
 
+
     }
+
 
   )
 );
