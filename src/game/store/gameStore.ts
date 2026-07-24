@@ -28,194 +28,258 @@ export const useGame = create<GameState>()(
 
       playerId: null,
 
+      telegramId: null,
+
 
       gold: 0,
+
       crystals: 340,
+
       ton: 0,
+
       pool: 0,
 
 
       energy: 100,
+
       energyMax: 100,
 
 
       xp: 0,
+
       level: 1,
 
 
       droneCount: 3,
+
       droneProgress: 0,
 
 
       adsWatchedToday: 0,
+
       lastAdReset: "",
 
 
+
       skills: initialSkills,
+
       owned: [],
+
       missions: initialMissions,
 
 
-setPlayer: (player) => {
 
-  set({
-
-    playerId: player.id,
+      setPlayer:(player)=>{
 
 
-    gold:
-      Number(player.coins ?? 0),
+        set({
+
+          playerId:
+            player.id,
 
 
-    level:
-      Number(player.level ?? 1),
+          telegramId:
+            player.telegramId,
 
 
-    energy:
-      Number(player.energy ?? 100),
+          gold:
+            Number(player.coins ?? 0),
 
 
-
-    skills:
-      player.skills
-        ? player.skills
-        : initialSkills,
+          level:
+            Number(player.level ?? 1),
 
 
-
-    owned:
-      player.owned
-        ? player.owned
-        : [],
+          energy:
+            Number(player.energy ?? 100),
 
 
 
-    missions:
-      player.missions
-        ? player.missions
-        : initialMissions,
-
-  });
-
-},
-
-      savePlayer: async () => {
+          skills:
+            player.skills ?? initialSkills,
 
 
-        const state = get();
+          owned:
+            player.owned ?? [],
 
 
-        if(!state.playerId) {
-          console.log("Sem playerId");
-          return;
-        }
-
-
-
-        await fetch("/api/player/save", {
-
-          method:"POST",
-
-          headers:{
-            "Content-Type":"application/json",
-          },
-
-
-          body:JSON.stringify({
-
-            id:
-              state.playerId,
-
-
-            coins:
-              Math.floor(state.gold),
-
-
-            level:
-              state.level,
-
-
-            energy:
-              state.energy,
-
-
-            skills:
-              state.skills,
-
-
-            owned:
-              state.owned,
-
-
-            missions:
-              state.missions,
-
-
-          }),
+          missions:
+            player.missions ?? initialMissions,
 
 
         });
 
 
-        console.log(
-          "PLAYER SALVO",
-          state.gold,
-          state.level
-        );
+      },
+
+
+
+
+      savePlayer: async()=>{
+
+
+        const state = get();
+
+
+        if(!state.playerId){
+
+          console.log(
+            "SEM PLAYER ID"
+          );
+
+          return;
+
+        }
+
+
+
+        try{
+
+
+          const response =
+            await fetch(
+              "/api/player/save",
+              {
+
+                method:"POST",
+
+                headers:{
+                  "Content-Type":
+                    "application/json",
+                },
+
+
+                body:JSON.stringify({
+
+                  telegramId:
+                    state.telegramId,
+
+
+                  coins:
+                    Math.floor(state.gold),
+
+
+                  level:
+                    state.level,
+
+
+                  energy:
+                    state.energy,
+
+
+                  skills:
+                    state.skills,
+
+
+                  owned:
+                    state.owned,
+
+
+                  missions:
+                    state.missions,
+
+
+                }),
+
+              }
+
+            );
+
+
+
+          const data =
+            await response.json();
+
+
+
+          console.log(
+            "SAVE RESPONSE",
+            data
+          );
+
+
+
+        }catch(error){
+
+
+          console.error(
+            "SAVE ERROR",
+            error
+          );
+
+
+        }
+
 
       },
+
 
 
 
 
       addPurchaseToPool:(tonValue)=>{
 
+
         set((state)=>({
+
 
           pool:
             state.pool +
-            tonValue * 0.5
+            tonValue * 0.5,
+
 
         }));
 
+
         get().savePlayer();
 
+
       },
+
 
 
 
 
       upgradeSkill:(id)=>{
 
+
         upgradeSkill(set)(id);
+
 
         setTimeout(()=>{
 
           get().savePlayer();
 
-        },300);
+        },500);
+
 
       },
+
 
 
 
 
       buyItem:(item)=>{
 
+
         buyItem(set)(item);
+
 
         setTimeout(()=>{
 
           get().savePlayer();
 
-        },300);
+        },500);
+
 
       },
 
 
 
 
+
       unlockLegendary:(id,cost)=>{
+
 
         unlockLegendary(set)(
           id,
@@ -227,10 +291,11 @@ setPlayer: (player) => {
 
           get().savePlayer();
 
-        },300);
+        },500);
 
 
       },
+
 
 
 
@@ -245,10 +310,12 @@ setPlayer: (player) => {
 
           get().savePlayer();
 
-        },300);
+        },500);
 
 
       },
+
+
 
 
 
@@ -258,6 +325,7 @@ setPlayer: (player) => {
 
         if(!canWatchAd())
           return;
+
 
 
         const ok =
@@ -271,10 +339,12 @@ setPlayer: (player) => {
 
 
 
+
         const response =
           await fetch(
             `/api/player?telegramId=${telegramId}`
           );
+
 
 
         const player =
@@ -294,38 +364,48 @@ setPlayer: (player) => {
             getAdsData().watched,
 
 
+
           lastAdReset:
             getAdsData().date,
+
 
 
           missions:
             state.missions.map((m)=>
 
+
               m.id==="d3"
 
-              ?
+              ? {
 
-              {
-                ...m,
+                  ...m,
 
-                progress:
-                  Math.min(
-                    m.progress+1,
-                    m.goal
-                  )
-              }
+                  progress:
+                    Math.min(
+                      m.progress + 1,
+                      m.goal
+                    )
+
+                }
+
 
               :
 
-              m
+                m
 
-            )
+
+            ),
+
 
         }));
 
 
+        get().savePlayer();
+
 
       },
+
+
 
 
 
@@ -333,7 +413,10 @@ setPlayer: (player) => {
         productionTick(set),
 
 
+
     }),
+
+
 
 
 
@@ -343,7 +426,9 @@ setPlayer: (player) => {
         "space-miner-save",
 
 
+
       skipHydration:true,
+
 
 
 
@@ -352,6 +437,10 @@ setPlayer: (player) => {
 
         playerId:
           state.playerId,
+
+
+        telegramId:
+          state.telegramId,
 
 
         crystals:
@@ -415,6 +504,7 @@ setPlayer: (player) => {
 
 
 
+
       onRehydrateStorage:()=>(
         state
       )=>{
@@ -424,16 +514,20 @@ setPlayer: (player) => {
           return;
 
 
+
         const ads =
           getAdsData();
+
 
 
         state.adsWatchedToday =
           ads.watched;
 
 
+
         state.lastAdReset =
           ads.date;
+
 
 
       },

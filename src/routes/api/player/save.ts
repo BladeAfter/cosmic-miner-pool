@@ -1,63 +1,163 @@
 import { prisma } from "../../lib/prisma";
 
+
+function formatPlayer(player: any) {
+
+  return {
+
+    ...player,
+
+    telegramId:
+      player.telegramId.toString(),
+
+    coins:
+      player.coins.toString(),
+
+  };
+
+}
+
+
+
 export async function POST({ request }: any) {
+
   try {
 
-    const body = await request.json();
+
+    const body =
+      await request.json();
 
 
-    if (!body.id) {
+
+    if(!body.telegramId) {
+
+
       return new Response(
+
         JSON.stringify({
-          error: "id do jogador obrigatório",
+
+          error:"telegramId obrigatório",
+
         }),
+
         {
           status:400,
           headers:{
             "Content-Type":"application/json",
           },
         }
+
       );
+
     }
 
 
-    const player = await prisma.player.update({
-
-      where:{
-        id: Number(body.id),
-      },
 
 
-      data:{
+
+    const telegramId =
+      BigInt(body.telegramId);
 
 
-        coins:
-          BigInt(body.coins ?? 0),
 
 
-        level:
-          Number(body.level ?? 1),
+
+    const player =
+      await prisma.player.upsert({
 
 
-        energy:
-          Number(body.energy ?? 100),
+        where:{
+          telegramId,
+        },
 
 
-        skills:
-          body.skills ?? undefined,
+
+        update:{
 
 
-        owned:
-          body.owned ?? undefined,
+          coins:
+            body.coins !== undefined
+            ? BigInt(body.coins)
+            : undefined,
 
 
-        missions:
-          body.missions ?? undefined,
+
+          level:
+            body.level !== undefined
+            ? Number(body.level)
+            : undefined,
 
 
-      },
 
-    });
+          energy:
+            body.energy !== undefined
+            ? Number(body.energy)
+            : undefined,
+
+
+
+          skills:
+            body.skills !== undefined
+            ? body.skills
+            : undefined,
+
+
+
+          owned:
+            body.owned !== undefined
+            ? body.owned
+            : undefined,
+
+
+
+          missions:
+            body.missions !== undefined
+            ? body.missions
+            : undefined,
+
+
+        },
+
+
+
+        create:{
+
+
+          telegramId,
+
+
+          coins:
+            BigInt(body.coins ?? 0),
+
+
+          level:
+            Number(body.level ?? 1),
+
+
+          energy:
+            Number(body.energy ?? 100),
+
+
+          skills:
+            body.skills ?? [],
+
+
+          owned:
+            body.owned ?? [],
+
+
+          missions:
+            body.missions ?? [],
+
+
+        },
+
+
+      });
+
+
+
+
 
 
 
@@ -67,11 +167,8 @@ export async function POST({ request }: any) {
 
         success:true,
 
-        coins:
-          player.coins.toString(),
-
-        level:
-          player.level,
+        player:
+          formatPlayer(player),
 
       }),
 
@@ -82,6 +179,7 @@ export async function POST({ request }: any) {
       }
 
     );
+
 
 
 
@@ -99,7 +197,7 @@ export async function POST({ request }: any) {
 
       JSON.stringify({
 
-        error:"erro ao salvar"
+        error:"erro ao salvar",
 
       }),
 
@@ -113,4 +211,5 @@ export async function POST({ request }: any) {
     );
 
   }
+
 }
