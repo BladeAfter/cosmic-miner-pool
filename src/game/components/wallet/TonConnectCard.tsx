@@ -1,6 +1,6 @@
 import { ChevronRight, Copy } from "lucide-react";
 import WalletCard from "./WalletCard";
-import { useTonConnect } from "../../hooks/useTonConnect";
+import { useTonConnect } from "../../../hooks/useTonConnect";
 
 export default function TonConnectCard() {
   const { wallet, connected, connect, disconnect } = useTonConnect();
