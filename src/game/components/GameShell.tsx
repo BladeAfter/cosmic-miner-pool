@@ -14,6 +14,7 @@ import { PoolCard } from "./PoolCard";
 import { Shop } from "./Shop";
 import { Missions } from "./Missions";
 import LoadingScreen from "./LoadingScreen/LoadingScreen";
+import Wallet from "./wallet/Wallet";
 
 export type Modal = "shop" | "pool" | "missions" | "wallet" | null;
 
@@ -22,9 +23,11 @@ export function GameShell() {
   const [loading, setLoading] = useState(true);
 
   const tick = useGame((state) => state.tick);
-useEffect(() => {
-  loadPlayer();
-}, []);
+
+  useEffect(() => {
+    loadPlayer();
+  }, []);
+
   useEffect(() => {
     let last = performance.now();
 
@@ -33,6 +36,7 @@ useEffect(() => {
       const dt = (now - last) / 1000;
 
       last = now;
+
       tick(dt);
     }, 500);
 
@@ -40,92 +44,112 @@ useEffect(() => {
   }, [tick]);
 
   if (loading) {
-    return <LoadingScreen onComplete={() => setLoading(false)} />;
+    return (
+      <LoadingScreen
+        onComplete={() => setLoading(false)}
+      />
+    );
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#070B17]">
+    <div className="relative flex h-screen flex-col overflow-hidden bg-[#070B17]">
       <Starfield />
 
-      <Header />
+      {/* Tela principal */}
+      {modal !== "wallet" && (
+        <>
+          <Header />
 
-      <main className="mx-auto w-full max-w-md flex-1 overflow-y-auto px-3 py-2 pb-24">
-        <Planet onNavigate={setModal} />
+          <main className="mx-auto flex-1 w-full max-w-md overflow-y-auto px-3 py-2 pb-24">
+            <Planet onNavigate={setModal} />
 
-        <ProductionCard />
+            <ProductionCard />
 
-        <SkillsSection />
-      </main>
+            <SkillsSection />
+          </main>
+        </>
+      )}
 
       <AnimatePresence mode="wait">
         {modal && (
           <motion.div
             key={modal}
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ duration: 0.35 }}
-            className="fixed inset-0 z-[9999] overflow-y-auto bg-[#070B17]"
+            initial={{
+              x: "100%",
+            }}
+            animate={{
+              x: 0,
+            }}
+            exit={{
+              x: "100%",
+            }}
+            transition={{
+              duration: 0.28,
+              ease: "easeOut",
+            }}
+            className="fixed inset-0 z-[9999] bg-[#070B17]"
           >
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#070B17]/95 p-5 backdrop-blur">
-              <h1 className="text-2xl font-black text-white">
-                {modal === "shop" && "🛒 Loja"}
-                {modal === "pool" && "🌊 Pool"}
-                {modal === "missions" && "🎯 Missões"}
-                {modal === "wallet" && "👛 Wallet"}
-              </h1>
+            <div className="h-full overflow-y-auto">
+              {modal !== "missions" && modal !== "wallet" && (
+                <div className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#070B17]/95 p-5 backdrop-blur-xl">
+                  <h1 className="text-2xl font-black text-white">
+                    {modal === "shop" && "🛒 Shop"}
+                    {modal === "pool" && "🌊 Pool"}
+                  </h1>
 
-              <button
-                onClick={() => setModal(null)}
-                className="rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20"
-              >
-                <X size={28} />
-              </button>
-            </div>
-
-            <div className="mx-auto w-full max-w-md p-5 pb-24">
-              {modal === "shop" && <Shop />}
-
-              {modal === "missions" && <Missions />}
-
-              {modal === "pool" && (
-                <>
-                  <PoolCard />
-
-                  <div className="glass-strong mt-5 space-y-4 rounded-3xl p-5">
-                    <h2 className="text-xl font-black text-white">
-                      🌌 Pool Comunitária
-                    </h2>
-
-                    <p className="text-sm text-white/70">
-                      A Pool Comunitária recebe 50% das compras em TON e 50% da
-                      receita dos anúncios.
-                    </p>
-
-                    <div className="rounded-2xl bg-primary/10 p-4">
-                      <div className="font-bold text-white">
-                        Próxima distribuição
-                      </div>
-
-                      <div className="mt-2 text-2xl font-black text-primary">
-                        6 dias
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {modal === "wallet" && (
-                <div className="py-20 text-center">
-                  <h2 className="text-3xl font-black text-white">
-                    👛 Wallet
-                  </h2>
-
-                  <p className="mt-4 text-white/60">
-                    Em desenvolvimento...
-                  </p>
+                  <button
+                    onClick={() => setModal(null)}
+                    className="rounded-full bg-white/10 p-2 text-white transition hover:bg-white/20 active:scale-95"
+                  >
+                    <X size={28} />
+                  </button>
                 </div>
               )}
+
+              <div
+                className={
+                  modal === "missions" || modal === "wallet"
+                    ? "h-full"
+                    : "mx-auto w-full max-w-md p-5 pb-24"
+                }
+              >
+                {modal === "shop" && <Shop />}
+
+                {modal === "pool" && (
+                  <>
+                    <PoolCard />
+
+                    <div className="glass-strong mt-5 space-y-4 rounded-3xl p-5">
+                      <h2 className="text-xl font-black text-white">
+                        🌌 Pool Comunitária
+                      </h2>
+
+                      <p className="text-sm text-white/70">
+                        A Pool Comunitária recebe 50% das compras em TON e
+                        50% da receita dos anúncios.
+                      </p>
+
+                      <div className="rounded-2xl bg-primary/10 p-4">
+                        <div className="font-bold text-white">
+                          Próxima distribuição
+                        </div>
+
+                        <div className="mt-2 text-2xl font-black text-primary">
+                          6 dias
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {modal === "missions" && (
+                  <Missions onClose={() => setModal(null)} />
+                )}
+
+                {modal === "wallet" && (
+                  <Wallet onClose={() => setModal(null)} />
+                )}
+              </div>
             </div>
           </motion.div>
         )}
@@ -133,3 +157,5 @@ useEffect(() => {
     </div>
   );
 }
+
+export default GameShell;

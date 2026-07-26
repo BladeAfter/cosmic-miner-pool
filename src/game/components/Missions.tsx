@@ -1,146 +1,123 @@
-import { motion } from "framer-motion";
-import { Check, Send, X, MessageCircle, Users, Play } from "lucide-react";
+import { useState } from "react";
 import { useGame } from "../store/gameStore";
 import { showRewardedAd } from "../../services/gigapub";
 
-const socialIcon: Record<string, React.ComponentType<{ className?: string }>> = {
-  Telegram: Send,
-  Seguir: X,
-  Discord: MessageCircle,
-  Convidar: Users,
-};
+import { MissionHeader } from "./missions/MissionHeader";
+import { MissionTabs } from "./missions/MissionTabs";
+import { MissionCard } from "./missions/MissionCard";
 
-export function Missions() {
-  const { missions, claimMission, watchAd } = useGame();
+import {
+  AD_REWARD,
+  getAdsRemaining,
+  MAX_DAILY_ADS,
+} from "../store/ads";
+
+import { Play } from "lucide-react";
+
+interface MissionsProps {
+  onClose: () => void;
+}
+
+export function Missions({ onClose }: MissionsProps) {
+  const { missions, claimMission, watchAd, playerId } = useGame();
+
+  const [tab, setTab] = useState<"daily" | "social" | "weekly">("daily");
+  const [remaining, setRemaining] = useState(getAdsRemaining());
 
   const handleWatchAd = async () => {
     const rewarded = await showRewardedAd();
 
-    if (rewarded) {
-      watchAd();
-    }
+    if (!rewarded || !playerId) return;
+
+    await watchAd(playerId);
+
+    setRemaining(getAdsRemaining());
   };
 
-  const groups = [
-    { id: "daily", label: "Diárias", color: "text-accent" },
-    { id: "weekly", label: "Semanais", color: "text-primary" },
-    { id: "social", label: "Sociais", color: "text-gold" },
-  ] as const;
+  const filtered = missions.filter((m) => m.type === tab);
 
   return (
-    <section className="space-y-3">
-      <div className="flex items-center justify-between px-1">
-        <h2 className="text-base font-black text-gradient-primary">
-          Missões
-        </h2>
+    <div className="min-h-screen bg-[#070B17] text-white">
+      <div className="mx-auto w-full max-w-md">
 
-        <button
-          onClick={handleWatchAd}
-          className="flex items-center gap-1 rounded-xl bg-gradient-accent px-2.5 py-1.5 text-[10px] font-black text-white shadow-neon transition active:scale-95 hover:scale-105"
-        >
-          <Play className="h-3 w-3" fill="currentColor" />
-          Assistir Anúncio
-        </button>
-      </div>
+        <MissionHeader
+          onClose={onClose}
+          onWatchAd={handleWatchAd}
+        />
 
-      {groups.map((g) => {
-        const list = missions.filter((m) => m.type === g.id);
+        <MissionTabs
+          active={tab}
+          onChange={setTab}
+          counts={{
+            daily: missions.filter((m) => m.type === "daily").length,
+            social: missions.filter((m) => m.type === "social").length,
+            weekly: missions.filter((m) => m.type === "weekly").length,
+          }}
+        />
 
-        if (!list.length) return null;
+        <div className="px-4 pt-3">
+          <div className="rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 p-4">
+            <div className="flex items-center justify-between">
 
-        return (
-          <div key={g.id}>
-            <h3
-              className={`mb-1.5 px-1 text-[10px] font-black uppercase tracking-widest ${g.color}`}
-            >
-              {g.label}
-            </h3>
+              <div className="flex items-center gap-3">
 
-            <div className="space-y-1.5">
-              {list.map((m) => {
-                const complete = m.progress >= m.goal;
-                const Icon = m.cta ? socialIcon[m.cta] : null;
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black/20">
+                  <Play
+                    size={22}
+                    fill="currentColor"
+                    className="text-black"
+                  />
+                </div>
 
-                return (
-                  <motion.div
-                    key={m.id}
-                    whileTap={{ scale: 0.98 }}
-                    className="glass flex items-center gap-2.5 rounded-2xl p-2.5"
-                  >
-                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-primary text-lg shadow-neon">
-                      {Icon ? (
-                        <Icon className="h-5 w-5 text-white" />
-                      ) : (
-                        "🎯"
-                      )}
-                    </div>
+                <div>
+                  <div className="text-xs font-black tracking-wider text-black/70">
+                    DAILY BONUS
+                  </div>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-xs font-black">
-                        {m.title}
-                      </div>
+                  <div className="text-lg font-black text-black">
+                    +{AD_REWARD.toLocaleString()} COINS
+                  </div>
 
-                      <div className="truncate text-[10px] text-muted-foreground">
-                        {m.desc}
-                      </div>
+                  <div className="text-xs text-black/70">
+                    {remaining}/{MAX_DAILY_ADS} vídeos restantes
+                  </div>
+                </div>
 
-                      <div className="mt-1 flex items-center gap-1.5">
-                        <div className="h-1 flex-1 overflow-hidden rounded-full bg-black/40">
-                          <div
-                            className="h-full bg-gradient-accent"
-                            style={{
-                              width: `${Math.min(
-                                100,
-                                (m.progress / m.goal) * 100
-                              )}%`,
-                            }}
-                          />
-                        </div>
+              </div>
 
-                        <span className="text-[9px] font-bold text-muted-foreground">
-                          {Math.floor(m.progress)}/{m.goal}
-                        </span>
-                      </div>
+              <button
+                onClick={handleWatchAd}
+                disabled={remaining === 0}
+                className="rounded-xl bg-black px-5 py-2 text-sm font-black text-yellow-400 transition hover:scale-105 active:scale-95 disabled:opacity-40"
+              >
+                WATCH
+              </button>
 
-                      <div className="mt-0.5 flex gap-2 text-[9px] font-bold">
-                        {m.reward.gold && (
-                          <span className="text-gold">
-                            +{m.reward.gold} 🪙
-                          </span>
-                        )}
-
-                        {m.reward.crystals && (
-                          <span className="text-crystal">
-                            +{m.reward.crystals} 💎
-                          </span>
-                        )}
-
-                        {m.reward.ton && (
-                          <span className="text-ton">
-                            +{m.reward.ton} TON
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => claimMission(m.id)}
-                      disabled={!complete}
-                      className="shrink-0 rounded-xl bg-gradient-gold px-2.5 py-2 text-[10px] font-black text-yellow-950 shadow-neon transition active:scale-95 disabled:opacity-40"
-                    >
-                      {complete ? (
-                        <Check className="h-4 w-4" strokeWidth={3} />
-                      ) : (
-                        "..."
-                      )}
-                    </button>
-                  </motion.div>
-                );
-              })}
             </div>
           </div>
-        );
-      })}
-    </section>
+        </div>
+
+        <div className="space-y-3 px-4 pt-3">
+
+          {filtered.length ? (
+            filtered.map((mission) => (
+              <MissionCard
+                key={mission.id}
+                mission={mission}
+                onClaim={() => claimMission(mission.id)}
+              />
+            ))
+          ) : (
+            <div className="rounded-2xl border border-white/10 bg-[#111827] p-8 text-center">
+              <p className="text-sm text-white/60">
+                No missions available.
+              </p>
+            </div>
+          )}
+
+        </div>
+
+      </div>
+    </div>
   );
 }

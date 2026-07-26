@@ -5,85 +5,102 @@ export const initialMissions: Mission[] = [
     id: "d1",
     title: "Colete 5.000 Coins",
     desc: "Minere sem parar",
-    reward: { gold: 500 },
+    reward: {
+      gold: 500,
+    },
     progress: 0,
     goal: 5000,
     type: "daily",
   },
+
   {
     id: "d2",
     title: "Melhore 3 habilidades",
     desc: "Evolua seu império",
-    reward: { crystals: 200 },
+    reward: {
+      crystals: 200,
+    },
     progress: 0,
     goal: 3,
     type: "daily",
   },
+
   {
     id: "d3",
-    title: "Assista 1 anúncio",
-    desc: "Ganhe 5.000 Gold",
-    reward: { gold: 5000 },
+    title: "Assista 5 anúncios",
+    desc: "Ganhe 5.000 Coins",
+    reward: {
+      gold: 5000,
+    },
     progress: 0,
     goal: 5,
     type: "daily",
   },
+
   {
     id: "w1",
     title: "Compre 5 itens na loja",
     desc: "Expanda seu arsenal",
-    reward: { ton: 0.5, crystals: 500 },
+    reward: {
+      gold: 10000,
+      crystals: 500,
+    },
     progress: 0,
     goal: 5,
     type: "weekly",
   },
+
   {
     id: "w2",
     title: "Ative 1 Booster",
-    desc: "Multiplique produção",
-    reward: { crystals: 1000 },
+    desc: "Multiplique sua produção",
+    reward: {
+      crystals: 1000,
+    },
     progress: 0,
     goal: 1,
     type: "weekly",
   },
+
   {
     id: "s1",
     title: "Entrar no Telegram",
     desc: "Junte-se à comunidade",
-    reward: { gold: 1000, crystals: 100 },
+    reward: {
+      gold: 1000,
+      crystals: 100,
+    },
     progress: 0,
     goal: 1,
     type: "social",
     cta: "Telegram",
   },
+
   {
     id: "s2",
     title: "Seguir no X",
-    desc: "Fique por dentro",
-    reward: { gold: 800 },
+    desc: "Fique por dentro das novidades",
+    reward: {
+      gold: 800,
+      crystals: 50,
+    },
     progress: 0,
     goal: 1,
     type: "social",
-    cta: "Seguir",
+    cta: "News",
   },
+
   {
     id: "s3",
-    title: "Entrar no Discord",
-    desc: "Converse com jogadores",
-    reward: { gold: 800 },
+    title: "Ativar Pagamentos",
+    desc: "Configure sua carteira",
+    reward: {
+      gold: 1500,
+      crystals: 150,
+    },
     progress: 0,
     goal: 1,
     type: "social",
-    cta: "Discord",
-  },
-  {
-    id: "s4",
-    title: "Convidar um amigo",
-    desc: "Ganhe recompensas juntos",
-    reward: { ton: 0.1 },
-    progress: 0,
-    goal: 1,
-    type: "social",
-    cta: "Convidar",
+    cta: "Payments",
   },
 ];
