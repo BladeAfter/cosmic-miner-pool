@@ -10,87 +10,80 @@ export default function ConvertCard() {
   const ton = crystals / CRYSTALS_PER_TON;
   const usd = ton * 5.78;
 
-  const handleConvert = () => {
-    // Abrir modal
-  };
+  const handleConvert = () => {};
 
   return (
     <WalletCard>
-      {/* Topo */}
-      <div className="flex items-center">
+      {/* TOPO */}
+      <div className="flex items-center justify-between gap-4">
         {/* Cristais */}
-        <div className="flex flex-1 items-center gap-4 pr-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[#2A4B77] bg-[#14284A] shadow-inner">
+        <div className="flex items-center gap-3">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#31527E] bg-[#163157]">
             <img
               src="/assets/crystal.png"
-              alt="Cristais"
-              className="h-12 w-12 object-contain"
+              className="h-9 w-9"
               draggable={false}
             />
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-wide text-[#7F92B8]">
+            <p className="text-[10px] uppercase text-[#8FA8D3]">
               CRISTAIS
             </p>
 
-            <h2 className="mt-1 text-[32px] font-black leading-none text-white">
+            <h2 className="text-[30px] font-black leading-none text-white">
               {crystals.toLocaleString("pt-BR")}
             </h2>
           </div>
         </div>
 
-        {/* Divisor */}
-        <div className="mx-3 h-20 w-px bg-[#2D4A73]" />
-
         {/* TON */}
-        <div className="flex flex-1 items-center gap-4 pl-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-[#2A4B77] bg-[#14284A] shadow-inner">
+        <div className="flex items-center gap-3">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#31527E] bg-[#163157]">
             <img
               src="/assets/ton.png"
-              alt="TON"
-              className="h-11 w-11 object-contain"
+              className="h-8 w-8"
               draggable={false}
             />
           </div>
 
           <div>
-            <p className="text-[11px] uppercase tracking-wide text-[#7F92B8]">
+            <p className="text-[10px] uppercase text-[#8FA8D3]">
               TON
             </p>
 
-            <h2 className="mt-1 text-[30px] font-black leading-none text-white">
+            <h2 className="text-[28px] font-black leading-none text-white">
               {ton.toFixed(4)}
             </h2>
 
-            <p className="mt-1 text-[12px] text-[#A2B7DA]">
+            <p className="mt-1 text-[11px] text-[#9DB4D8]">
               ≈ ${usd.toFixed(2)} USD
             </p>
           </div>
         </div>
       </div>
 
-      <div className="my-5 h-px bg-[#2D4A73]" />
+      <div className="my-4 h-px bg-[#2E4D77]" />
 
-      {/* Parte inferior */}
-      <div className="flex gap-5">
+      {/* BAIXO */}
+      <div className="flex items-stretch gap-4">
         <div className="flex flex-1 flex-col justify-between">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-[#7F92B8]">
+            <p className="text-[10px] uppercase text-[#8FA8D3]">
               TAXA DE CONVERSÃO
             </p>
 
-            <p className="mt-2 text-[16px] font-bold text-white">
+            <p className="mt-2 text-[15px] font-bold text-white">
               {CRYSTALS_PER_TON.toLocaleString("pt-BR")} 💎 = 1 TON
             </p>
           </div>
 
-          <div className="mt-5">
-            <p className="text-[10px] uppercase tracking-wider text-[#7F92B8]">
+          <div className="mt-4">
+            <p className="text-[10px] uppercase text-[#8FA8D3]">
               MÍNIMO
             </p>
 
-            <p className="mt-2 text-[16px] font-bold text-white">
+            <p className="mt-2 text-[15px] font-bold text-white">
               {MIN_CONVERT.toLocaleString("pt-BR")} 💎 ={" "}
               {(MIN_CONVERT / CRYSTALS_PER_TON).toFixed(2)} TON
             </p>
@@ -100,29 +93,28 @@ export default function ConvertCard() {
         <button
           onClick={handleConvert}
           className="
-            w-[145px]
-            rounded-[22px]
+            w-[130px]
+            rounded-2xl
             bg-gradient-to-b
-            from-[#9756FF]
-            to-[#6E2BFF]
-            px-4
-            py-5
-            transition-all
-            hover:brightness-110
-            active:scale-95
+            from-[#A05BFF]
+            to-[#6F2FFF]
+            px-3
+            py-4
             flex
             flex-col
-            items-center
             justify-center
+            items-center
             shadow-lg
-            shadow-purple-500/25
+            shadow-purple-700/25
+            transition
+            active:scale-95
           "
         >
-          <span className="text-[15px] font-black tracking-wide text-white">
+          <span className="text-[15px] font-extrabold text-white">
             CONVERTER
           </span>
 
-          <span className="mt-2 text-center text-[11px] leading-4 text-white/85">
+          <span className="mt-2 text-center text-[10px] leading-4 text-white/80">
             Converter seus
             <br />
             cristais em TON

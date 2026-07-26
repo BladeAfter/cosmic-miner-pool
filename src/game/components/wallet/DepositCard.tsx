@@ -2,15 +2,15 @@ import WalletCard from "./WalletCard";
 
 export default function DepositCard() {
   const handleDeposit = () => {
-    // Abrir Ton Connect para realizar o depósito
+    // Abrir Ton Connect
   };
 
   return (
     <WalletCard>
-      <div className="flex items-stretch gap-4">
-        {/* Conteúdo */}
+      <div className="flex items-center justify-between gap-4">
+        {/* Esquerda */}
         <div className="flex flex-1 items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#21406B] bg-[#132544]">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#2C4D79] bg-[#173157]">
             <img
               src="/assets/deposit.png"
               alt="Depositar TON"
@@ -19,18 +19,16 @@ export default function DepositCard() {
             />
           </div>
 
-          <div className="flex-1">
-            <p className="text-[10px] uppercase tracking-wider text-[#7083A7]">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-wide text-[#8FA8D3]">
               DEPÓSITO DE TON
             </p>
 
-            <h2 className="mt-1 text-[20px] font-black leading-none text-white">
-              DEPOSITAR TON
-            </h2>
-
-            <p className="mt-2 text-[12px] leading-5 text-[#8EA7D3]">
+            <p className="mt-1 text-[15px] font-bold text-white">
               Deposite TON na sua carteira
-              <br />
+            </p>
+
+            <p className="mt-1 text-[11px] leading-4 text-[#9DB4D8]">
               e aumente seu saldo.
             </p>
           </div>
@@ -38,32 +36,31 @@ export default function DepositCard() {
 
         {/* Botão */}
         <button
-          type="button"
           onClick={handleDeposit}
           className="
+            h-[82px]
             w-[120px]
-            rounded-2xl
+            shrink-0
+            rounded-[18px]
             bg-gradient-to-b
-            from-[#2CE173]
-            to-[#18B85A]
-            px-3
-            py-4
-            transition-all
-            hover:brightness-110
-            active:scale-95
+            from-[#2EE77B]
+            to-[#16B85A]
             flex
             flex-col
             items-center
             justify-center
             shadow-lg
-            shadow-green-500/20
+            shadow-green-600/20
+            transition
+            hover:brightness-110
+            active:scale-95
           "
         >
-          <span className="text-[14px] font-extrabold text-[#06131F]">
+          <span className="text-[14px] font-black text-[#06141F]">
             DEPOSITAR
           </span>
 
-          <span className="mt-2 text-center text-[10px] leading-4 text-[#06131F]/80">
+          <span className="mt-1 text-center text-[10px] leading-4 text-[#06141F]/75">
             Ver endereço
             <br />
             da carteira
