@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TonConnectUIProvider } from "@tonconnect/ui-react";
 import {
   Outlet,
   Link,
@@ -167,8 +168,12 @@ function RootComponent() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
+    <TonConnectUIProvider
+      manifestUrl="https://cosmic-miner-pool-eight.vercel.app/tonconnect-manifest.json"
+    >
       <Outlet />
-    </QueryClientProvider>
-  );
+    </TonConnectUIProvider>
+  </QueryClientProvider>
+);
 }

@@ -1,16 +1,31 @@
 import { ChevronRight, Copy } from "lucide-react";
 import WalletCard from "./WalletCard";
+import { useTonConnect } from "../../hooks/useTonConnect";
 
 export default function TonConnectCard() {
-  const connected = false;
-  const walletAddress = "UQCX...8F7A";
+  const { wallet, connected, connect, disconnect } = useTonConnect();
 
-  const handleWallet = () => {
+  const walletAddress = wallet
+    ? `${wallet.account.address.slice(0, 6)}...${wallet.account.address.slice(-4)}`
+    : "";
+
+  const handleWallet = async () => {
     if (connected) {
+      await disconnect();
       return;
     }
 
-    // Ton Connect
+    await connect();
+  };
+
+  const copyAddress = async (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+
+    if (!wallet) return;
+
+    await navigator.clipboard.writeText(wallet.account.address);
   };
 
   return (
@@ -56,7 +71,8 @@ export default function TonConnectCard() {
               {connected && (
                 <Copy
                   size={12}
-                  className="text-[#9DB4D8] hover:text-white"
+                  onClick={copyAddress}
+                  className="cursor-pointer text-[#9DB4D8] transition hover:text-white"
                 />
               )}
             </div>
@@ -65,9 +81,13 @@ export default function TonConnectCard() {
 
         {/* DIREITA */}
         <div className="flex items-center gap-3">
-          {!connected && (
+          {!connected ? (
             <span className="text-[12px] font-semibold text-[#15C8FF]">
               Conectar
+            </span>
+          ) : (
+            <span className="text-[12px] font-semibold text-[#22E36A]">
+              Conectado
             </span>
           )}
 
